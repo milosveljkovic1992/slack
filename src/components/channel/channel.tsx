@@ -2,6 +2,9 @@ import { ChangeEvent, FormEvent, useState } from 'react';
 import { nanoid } from 'nanoid';
 import { Box, TextField } from '@mui/material';
 
+import { Message } from 'components';
+import type { MessageType } from 'components/message/message.types';
+
 const style = {
   width: '100%',
   display: 'flex',
@@ -10,16 +13,9 @@ const style = {
   padding: '10px 20px',
 };
 
-type Message = {
-  messageId: string;
-  username: string;
-  channel: string;
-  body: string;
-};
-
 export const Channel = () => {
   const [messageInput, setMessageInput] = useState('');
-  const [messages, setMessages] = useState<Message[]>(
+  const [messages, setMessages] = useState<MessageType[]>(
     localStorage.getItem('messages')
       ? JSON.parse(localStorage.getItem('messages') || '')
       : [],
@@ -53,9 +49,7 @@ export const Channel = () => {
       <div className="messages-container">
         <ul style={{ listStyleType: 'none', padding: 0 }}>
           {messages.map((msg) => (
-            <li key={msg.messageId}>
-              <b>{msg.username}</b> {msg.body}
-            </li>
+            <Message key={msg.messageId} message={msg} />
           ))}
         </ul>
       </div>
