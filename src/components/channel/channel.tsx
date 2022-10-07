@@ -36,6 +36,7 @@ export const Channel = () => {
           username: 'MyLosh',
           channel: 'main thread',
           body: messageInput,
+          timestamp: new Date(),
         },
       ];
       localStorage.setItem('messages', JSON.stringify(newMessages));
@@ -46,13 +47,11 @@ export const Channel = () => {
 
   return (
     <Box sx={style}>
-      <div className="messages-container">
-        <ul style={{ listStyleType: 'none', padding: 0 }}>
-          {messages.map((msg) => (
-            <Message key={msg.messageId} message={msg} />
-          ))}
-        </ul>
-      </div>
+      <Box className="messages-container" pb={1.5}>
+        {messages.map((msg) => (
+          <Message key={msg.messageId} message={msg} />
+        ))}
+      </Box>
       <Box className="message-input" width="100%" display="block">
         <form onSubmit={handleSubmit}>
           <TextField

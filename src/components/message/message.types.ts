@@ -3,4 +3,5 @@ export type MessageType = {
   username: string;
   channel: string;
   body: string;
+  timestamp: Date;
 };

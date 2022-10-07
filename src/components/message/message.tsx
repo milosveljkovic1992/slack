@@ -6,8 +6,16 @@ interface MessageProps {
 
 export const Message = ({ message }: MessageProps) => {
   return (
-    <li>
-      <b>{message.username}</b> {message.body}
-    </li>
+    <div>
+      <div className="message-meta">
+        <b>{message.username}</b>
+        <span style={{ fontSize: '0.75rem', marginLeft: '5px' }}>
+          {new Date(message.timestamp).toLocaleTimeString()}
+        </span>
+      </div>
+      <p style={{ marginBottom: '0.5rem', marginTop: '0.25rem' }}>
+        {message.body}
+      </p>
+    </div>
   );
 };
