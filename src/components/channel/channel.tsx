@@ -1,6 +1,15 @@
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { nanoid } from 'nanoid';
 import { Box, TextField } from '@mui/material';
+import {
+  collection,
+  doc,
+  getDocs,
+  setDoc,
+  Timestamp,
+} from 'firebase/firestore';
+
+import { db } from 'firebase-config';
 
 import { Message } from 'components';
 import type { MessageType } from 'components/message/message.types';
@@ -15,33 +24,67 @@ const style = {
 
 export const Channel = () => {
   const [messageInput, setMessageInput] = useState('');
-  const [messages, setMessages] = useState<MessageType[]>(
-    localStorage.getItem('messages')
-      ? JSON.parse(localStorage.getItem('messages') || '')
-      : [],
-  );
+  const [messages, setMessages] = useState<MessageType[]>([]);
+
+  const fetchMessages = async () => {
+    const messages: MessageType[] = [];
+    const querySnapshot = await getDocs(
+      collection(
+        db,
+        'workplaces',
+        'g95Hrl87ilfXgTwYOXl1',
+        'channels',
+        'flFPHVKyKkEEvmxcs3GA',
+        'messages',
+      ),
+    );
+
+    querySnapshot.forEach((doc) => {
+      messages.push(doc.data() as MessageType);
+    });
+
+    setMessages(messages);
+  };
+
+  useEffect(() => {
+    fetchMessages();
+  }, []);
 
   const handleChange = (e: ChangeEvent) => {
     const target = e.target as HTMLInputElement;
     setMessageInput(target.value);
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setMessages((messages) => {
-      const newMessages = [
-        ...messages,
-        {
-          messageId: nanoid(),
-          username: 'MyLosh',
-          channel: 'main thread',
-          body: messageInput,
-          timestamp: new Date(),
-        },
-      ];
-      localStorage.setItem('messages', JSON.stringify(newMessages));
-      return newMessages;
-    });
+
+    const newMessage = {
+      id: nanoid(20),
+      senderUsername: 'MyLosh',
+      senderId: 'sender1',
+      body: messageInput,
+      timestamp: new Date(),
+    };
+
+    try {
+      await setDoc(
+        doc(
+          db,
+          'workplaces',
+          'g95Hrl87ilfXgTwYOXl1',
+          'channels',
+          'flFPHVKyKkEEvmxcs3GA',
+          'messages',
+          newMessage.id,
+        ),
+        newMessage,
+      );
+    } catch (error) {
+      return;
+    }
+
+    setMessages((messages) => [...messages, newMessage]);
+
     setMessageInput('');
   };
 
@@ -49,7 +92,7 @@ export const Channel = () => {
     <Box sx={style}>
       <Box className="messages-container" pb={1.5}>
         {messages.map((msg) => (
-          <Message key={msg.messageId} message={msg} />
+          <Message key={msg.id} message={msg} />
         ))}
       </Box>
       <Box className="message-input" width="100%" display="block">

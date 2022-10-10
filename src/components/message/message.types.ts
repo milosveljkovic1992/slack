@@ -1,7 +1,7 @@
 export type MessageType = {
-  messageId: string;
-  username: string;
-  channel: string;
+  id: string;
+  senderId: string;
+  senderUsername: string;
   body: string;
   timestamp: Date;
 };
