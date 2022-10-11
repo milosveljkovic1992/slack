@@ -1,15 +1,14 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
+
 import { nanoid } from 'nanoid';
 import { Box, TextField } from '@mui/material';
 import {
   collection,
   doc,
-  getDocs,
   onSnapshot,
   orderBy,
   query,
   setDoc,
-  where,
 } from 'firebase/firestore';
 
 import { db } from 'firebase-config';
@@ -28,6 +27,7 @@ const style = {
 export const Channel = () => {
   const [messageInput, setMessageInput] = useState('');
   const [messages, setMessages] = useState<MessageType[]>([]);
+  const submitPending = useRef(false);
 
   const workplaceId = 'g95Hrl87ilfXgTwYOXl1';
   const channelId = 'flFPHVKyKkEEvmxcs3GA';
@@ -37,10 +37,7 @@ export const Channel = () => {
     setMessageInput(target.value);
   };
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!messageInput.trim().length) return;
-
+  const submitMessageToFirebase = async () => {
     const newMessage = {
       id: nanoid(20),
       senderUsername: 'MyLosh',
@@ -50,6 +47,8 @@ export const Channel = () => {
     };
 
     try {
+      submitPending.current = true;
+
       await setDoc(
         doc(
           db,
@@ -63,9 +62,18 @@ export const Channel = () => {
         newMessage,
       );
     } catch (error) {
+      submitPending.current = false;
       return;
     }
+  };
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    if (!messageInput.trim().length || submitPending.current) return;
+
+    submitMessageToFirebase();
     setMessageInput('');
+    submitPending.current = false;
   };
 
   useEffect(() => {
