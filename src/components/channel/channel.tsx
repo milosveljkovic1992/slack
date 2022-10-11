@@ -52,6 +52,7 @@ export const Channel = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
+    if (!messageInput.trim().length) return;
     const newMessage = {
       id: nanoid(20),
       senderUsername: 'MyLosh',
@@ -78,7 +79,6 @@ export const Channel = () => {
     }
 
     setMessages((messages) => [...messages, newMessage]);
-
     setMessageInput('');
   };
 
