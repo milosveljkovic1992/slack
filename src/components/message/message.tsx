@@ -5,12 +5,16 @@ interface MessageProps {
 }
 
 export const Message = ({ message }: MessageProps) => {
+  const timestamp = message.timestamp.seconds
+    ? new Date(message.timestamp.seconds * 1000).toLocaleTimeString()
+    : '';
+
   return (
     <div>
       <div className="message-meta">
-        <b>{message.username}</b>
+        <b>{message.senderUsername}</b>
         <span style={{ fontSize: '0.75rem', marginLeft: '5px' }}>
-          {new Date(message.timestamp).toLocaleTimeString()}
+          {timestamp}
         </span>
       </div>
       <p style={{ marginBottom: '0.5rem', marginTop: '0.25rem' }}>
