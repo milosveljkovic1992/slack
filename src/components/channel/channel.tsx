@@ -5,9 +5,11 @@ import {
   collection,
   doc,
   getDocs,
+  onSnapshot,
   orderBy,
   query,
   setDoc,
+  where,
 } from 'firebase/firestore';
 
 import { db } from 'firebase-config';
@@ -63,13 +65,10 @@ export const Channel = () => {
     } catch (error) {
       return;
     }
-
-    setMessages((messages) => [...messages, newMessage]);
     setMessageInput('');
   };
 
-  const fetchMessages = async () => {
-    const messages: MessageType[] = [];
+  useEffect(() => {
     const q = query(
       collection(
         db,
@@ -82,16 +81,15 @@ export const Channel = () => {
       orderBy('timestamp', 'asc'),
     );
 
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      messages.push(doc.data() as MessageType);
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const messages: MessageType[] = [];
+      querySnapshot.forEach((doc) => {
+        messages.push(doc.data() as MessageType);
+      });
+      setMessages(messages);
     });
 
-    setMessages(messages);
-  };
-
-  useEffect(() => {
-    fetchMessages();
+    return () => unsubscribe();
   }, []);
 
   return (
