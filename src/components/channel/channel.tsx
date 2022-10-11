@@ -1,13 +1,7 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { nanoid } from 'nanoid';
 import { Box, TextField } from '@mui/material';
-import {
-  collection,
-  doc,
-  getDocs,
-  setDoc,
-  Timestamp,
-} from 'firebase/firestore';
+import { collection, doc, getDocs, setDoc } from 'firebase/firestore';
 
 import { db } from 'firebase-config';
 
