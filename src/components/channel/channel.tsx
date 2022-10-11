@@ -1,7 +1,14 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { nanoid } from 'nanoid';
 import { Box, TextField } from '@mui/material';
-import { collection, doc, getDocs, setDoc } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  getDocs,
+  orderBy,
+  query,
+  setDoc,
+} from 'firebase/firestore';
 
 import { db } from 'firebase-config';
 
@@ -20,29 +27,8 @@ export const Channel = () => {
   const [messageInput, setMessageInput] = useState('');
   const [messages, setMessages] = useState<MessageType[]>([]);
 
-  const fetchMessages = async () => {
-    const messages: MessageType[] = [];
-    const querySnapshot = await getDocs(
-      collection(
-        db,
-        'workplaces',
-        'g95Hrl87ilfXgTwYOXl1',
-        'channels',
-        'flFPHVKyKkEEvmxcs3GA',
-        'messages',
-      ),
-    );
-
-    querySnapshot.forEach((doc) => {
-      messages.push(doc.data() as MessageType);
-    });
-
-    setMessages(messages);
-  };
-
-  useEffect(() => {
-    fetchMessages();
-  }, []);
+  const workplaceId = 'g95Hrl87ilfXgTwYOXl1';
+  const channelId = 'flFPHVKyKkEEvmxcs3GA';
 
   const handleChange = (e: ChangeEvent) => {
     const target = e.target as HTMLInputElement;
@@ -51,8 +37,8 @@ export const Channel = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
     if (!messageInput.trim().length) return;
+
     const newMessage = {
       id: nanoid(20),
       senderUsername: 'MyLosh',
@@ -66,9 +52,9 @@ export const Channel = () => {
         doc(
           db,
           'workplaces',
-          'g95Hrl87ilfXgTwYOXl1',
+          workplaceId,
           'channels',
-          'flFPHVKyKkEEvmxcs3GA',
+          channelId,
           'messages',
           newMessage.id,
         ),
@@ -81,6 +67,32 @@ export const Channel = () => {
     setMessages((messages) => [...messages, newMessage]);
     setMessageInput('');
   };
+
+  const fetchMessages = async () => {
+    const messages: MessageType[] = [];
+    const q = query(
+      collection(
+        db,
+        'workplaces',
+        workplaceId,
+        'channels',
+        channelId,
+        'messages',
+      ),
+      orderBy('timestamp', 'asc'),
+    );
+
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      messages.push(doc.data() as MessageType);
+    });
+
+    setMessages(messages);
+  };
+
+  useEffect(() => {
+    fetchMessages();
+  }, []);
 
   return (
     <Box sx={style}>
