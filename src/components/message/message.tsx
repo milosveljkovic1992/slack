@@ -7,7 +7,7 @@ interface MessageProps {
 export const Message = ({ message }: MessageProps) => {
   const timestamp = message.timestamp.seconds
     ? new Date(message.timestamp.seconds * 1000).toLocaleTimeString()
-    : new Date(message.timestamp).toLocaleTimeString();
+    : '';
 
   return (
     <div>
