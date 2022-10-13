@@ -5,6 +5,7 @@ const PageLayoutStyle = {
   height: '100vh',
   display: 'grid',
   gridTemplateRows: '5vh 1fr',
+  overflow: 'hidden',
 };
 
 export const App = () => {

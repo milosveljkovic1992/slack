@@ -21,7 +21,7 @@ const style = {
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'flex-end',
-  padding: '10px 20px',
+  maxHeight: '95vh',
 };
 
 export const Channel = () => {
@@ -102,7 +102,12 @@ export const Channel = () => {
 
   return (
     <Box sx={style}>
-      <Box className="messages-container" pb={1.5}>
+      <Box
+        className="messages-container"
+        px={2.5}
+        py={1.25}
+        sx={{ overflowY: 'auto' }}
+      >
         {messages.map((msg) => (
           <Message key={msg.id} message={msg} />
         ))}
