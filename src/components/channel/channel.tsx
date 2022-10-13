@@ -1,7 +1,10 @@
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 
 import { nanoid } from 'nanoid';
 import { Box, TextField } from '@mui/material';
+import { styled } from '@mui/material/styles';
+
 import {
   collection,
   doc,
@@ -10,24 +13,34 @@ import {
   query,
   setDoc,
 } from 'firebase/firestore';
-
 import { db } from 'firebase-config';
 
 import { Message } from 'components';
 import type { MessageType } from 'components/message/message.types';
 
-const style = {
+const ChannelContainer = styled(Box)(() => ({
   width: '100%',
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'flex-end',
   maxHeight: '95vh',
-};
+}));
+
+const MessagesContainer = styled(Box)(() => ({
+  padding: '10px 20px 0',
+  overflowY: 'auto',
+}));
+
+const MessageInput = styled(Box)(() => ({
+  width: '100%',
+  display: 'block',
+}));
 
 export const Channel = () => {
   const [messageInput, setMessageInput] = useState('');
   const [messages, setMessages] = useState<MessageType[]>([]);
   const submitPending = useRef(false);
+  const listRef = useRef<HTMLDivElement>(null);
 
   const workplaceId = 'g95Hrl87ilfXgTwYOXl1';
   const channelId = 'flFPHVKyKkEEvmxcs3GA';
@@ -77,6 +90,11 @@ export const Channel = () => {
   };
 
   useEffect(() => {
+    const scrollToLastMessage = () => {
+      const lastChild = listRef.current?.lastElementChild;
+      lastChild?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    };
+
     const q = query(
       collection(
         db,
@@ -94,37 +112,38 @@ export const Channel = () => {
       querySnapshot.forEach((doc) => {
         messages.push(doc.data() as MessageType);
       });
-      setMessages(messages);
+
+      flushSync(() => {
+        setMessages(messages);
+      });
+
+      scrollToLastMessage();
     });
 
     return () => unsubscribe();
   }, []);
 
   return (
-    <Box sx={style}>
-      <Box
-        className="messages-container"
-        px={2.5}
-        py={1.25}
-        sx={{ overflowY: 'auto' }}
-      >
+    <ChannelContainer>
+      <MessagesContainer ref={listRef}>
         {messages.map((msg) => (
           <Message key={msg.id} message={msg} />
         ))}
-      </Box>
-      <Box className="message-input" width="100%" display="block">
+      </MessagesContainer>
+      <MessageInput>
         <form onSubmit={handleSubmit}>
           <TextField
             id="message-input"
             label="Your message"
             variant="outlined"
+            style={{ marginTop: '4px' }}
             fullWidth={true}
             value={messageInput}
             onChange={handleChange}
             autoComplete="off"
           />
         </form>
-      </Box>
-    </Box>
+      </MessageInput>
+    </ChannelContainer>
   );
 };

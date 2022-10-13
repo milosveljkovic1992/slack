@@ -1,8 +1,16 @@
+import { Card } from '@mui/material';
+import { styled } from '@mui/material/styles';
+
 import type { MessageType } from './message.types';
 
 interface MessageProps {
   message: MessageType;
 }
+
+const MessageCard = styled(Card)(() => ({
+  border: 0,
+  boxShadow: 'none',
+}));
 
 export const Message = ({ message }: MessageProps) => {
   const timestamp = message.timestamp.seconds
@@ -10,7 +18,7 @@ export const Message = ({ message }: MessageProps) => {
     : '';
 
   return (
-    <div>
+    <MessageCard>
       <div className="message-meta">
         <b>{message.senderUsername}</b>
         <span style={{ fontSize: '0.75rem', marginLeft: '5px' }}>
@@ -20,6 +28,6 @@ export const Message = ({ message }: MessageProps) => {
       <p style={{ marginBottom: '0.5rem', marginTop: '0.25rem' }}>
         {message.body}
       </p>
-    </div>
+    </MessageCard>
   );
 };
