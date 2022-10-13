@@ -1,12 +1,13 @@
-import { Box } from '@mui/material';
+import { Box as MUIBox } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
-const style = {
+const Box = styled(MUIBox)(({ theme }) => ({
   width: '220px',
-  backgroundColor: '#3F0E40',
-  color: '#fff',
+  backgroundColor: theme.palette.primary.light,
+  color: theme.palette.primary.contrastText,
   padding: '10px 20px',
-};
+}));
 
 export const Sidebar = () => {
-  return <Box sx={style}>Sidebar</Box>;
+  return <Box>Sidebar</Box>;
 };
