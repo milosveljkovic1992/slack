@@ -15,7 +15,7 @@ import {
 } from 'firebase/firestore';
 import { db } from 'firebase-config';
 
-import { Message } from 'components';
+import { Message, NewUser } from 'components';
 import type { MessageType } from 'components/message/message.types';
 
 const ChannelContainer = styled(Box)(() => ({
@@ -42,8 +42,8 @@ export const Channel = () => {
   const submitPending = useRef(false);
   const listRef = useRef<HTMLDivElement>(null);
 
-  const workplaceId = 'g95Hrl87ilfXgTwYOXl1';
-  const channelId = 'flFPHVKyKkEEvmxcs3GA';
+  const workplaceId = 'mivel';
+  const channelId = 'general';
 
   const handleChange = (e: ChangeEvent) => {
     const target = e.target as HTMLInputElement;
@@ -107,24 +107,44 @@ export const Channel = () => {
       orderBy('timestamp', 'asc'),
     );
 
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const messages: MessageType[] = [];
-      querySnapshot.forEach((doc) => {
-        messages.push(doc.data() as MessageType);
+    let fetchedMessages: MessageType[] = [];
+
+    const unsubscribeOnChange = onSnapshot(q, (querySnapshot) => {
+      querySnapshot.docChanges().forEach((change) => {
+        const singleMessage = change.doc.data() as MessageType;
+
+        if (change.type === 'added') {
+          fetchedMessages = [...fetchedMessages, singleMessage];
+        }
+
+        if (change.type === 'modified') {
+          fetchedMessages = messages.map((msg) =>
+            msg.id === singleMessage.id ? singleMessage : msg,
+          );
+        }
+
+        if (change.type === 'removed') {
+          fetchedMessages = messages.filter(
+            (msg) => msg.id !== singleMessage.id,
+          );
+        }
       });
 
       flushSync(() => {
-        setMessages(messages);
+        setMessages(fetchedMessages);
       });
 
-      scrollToLastMessage();
+      querySnapshot.docChanges().forEach((change) => {
+        if (change.type === 'added') scrollToLastMessage();
+      });
     });
 
-    return () => unsubscribe();
+    return () => unsubscribeOnChange();
   }, []);
 
   return (
     <ChannelContainer>
+      <NewUser />
       <MessagesContainer ref={listRef}>
         {messages.map((msg) => (
           <Message key={msg.id} message={msg} />
