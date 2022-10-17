@@ -2,6 +2,8 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from 'firebase-config';
 
+import { RootState } from 'store';
+
 import { addSingleUser } from './users';
 
 export enum Role {
@@ -43,7 +45,7 @@ const initialState: UserType = {
 };
 
 export const registerNewUser = createAsyncThunk(
-  'user/sync',
+  'user/register',
   async (user: UserType, thunkAPI) => {
     const { id } = user;
     try {
@@ -52,6 +54,31 @@ export const registerNewUser = createAsyncThunk(
       });
       addSingleUser(user);
       return user;
+    } catch (error) {
+      return thunkAPI.rejectWithValue('');
+    }
+  },
+);
+
+interface AddUserToChannel {
+  user: UserType;
+  workplaceId: string;
+  channelId: string;
+}
+
+export const addUserToChannel = createAsyncThunk(
+  'user/addToChannel',
+  async ({ workplaceId, channelId }: AddUserToChannel, thunkAPI) => {
+    const state = thunkAPI.getState() as RootState;
+    const { id } = state.user;
+
+    try {
+      await setDoc(
+        doc(db, 'workplaces', workplaceId, 'channels', channelId, 'users', id),
+        {
+          ...state.user,
+        },
+      );
     } catch (error) {
       return thunkAPI.rejectWithValue('');
     }

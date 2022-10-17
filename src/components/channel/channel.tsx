@@ -42,8 +42,8 @@ export const Channel = () => {
   const submitPending = useRef(false);
   const listRef = useRef<HTMLDivElement>(null);
 
-  const workplaceId = 'g95Hrl87ilfXgTwYOXl1';
-  const channelId = 'flFPHVKyKkEEvmxcs3GA';
+  const workplaceId = 'mivel';
+  const channelId = 'general';
 
   const handleChange = (e: ChangeEvent) => {
     const target = e.target as HTMLInputElement;
