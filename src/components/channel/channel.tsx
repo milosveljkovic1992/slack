@@ -107,20 +107,39 @@ export const Channel = () => {
       orderBy('timestamp', 'asc'),
     );
 
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const messages: MessageType[] = [];
-      querySnapshot.forEach((doc) => {
-        messages.push(doc.data() as MessageType);
+    let fetchedMessages: MessageType[] = [];
+
+    const unsubscribeOnChange = onSnapshot(q, (querySnapshot) => {
+      querySnapshot.docChanges().forEach((change) => {
+        const singleMessage = change.doc.data() as MessageType;
+
+        if (change.type === 'added') {
+          fetchedMessages = [...fetchedMessages, singleMessage];
+        }
+
+        if (change.type === 'modified') {
+          fetchedMessages = messages.map((msg) =>
+            msg.id === singleMessage.id ? singleMessage : msg,
+          );
+        }
+
+        if (change.type === 'removed') {
+          fetchedMessages = messages.filter(
+            (msg) => msg.id !== singleMessage.id,
+          );
+        }
       });
 
       flushSync(() => {
-        setMessages(messages);
+        setMessages(fetchedMessages);
       });
 
-      scrollToLastMessage();
+      querySnapshot.docChanges().forEach((change) => {
+        if (change.type === 'added') scrollToLastMessage();
+      });
     });
 
-    return () => unsubscribe();
+    return () => unsubscribeOnChange();
   }, []);
 
   return (
