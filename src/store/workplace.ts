@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { ChannelType } from 'components/sidebar/sidebar';
+import type { ChannelType } from 'components/channel/channel.types';
 
 export type WorkplaceType = {
   id: string;

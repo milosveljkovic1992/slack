@@ -7,7 +7,7 @@ import { db } from 'firebase-config';
 import { Box as MUIBox } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-import type { ChannelType } from 'store/channel';
+import type { ChannelType } from 'components/channel/channel.types';
 
 const Box = styled(MUIBox)(({ theme }) => ({
   width: '220px',

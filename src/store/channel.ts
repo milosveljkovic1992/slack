@@ -1,9 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export type ChannelType = {
-  id: string;
-  name: string;
-};
+import type { ChannelType } from 'components/channel/channel.types';
 
 const initialState: ChannelType = {
   id: '',

@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { ChannelType } from './channel';
+
+import type { ChannelType } from 'components/channel/channel.types';
 
 interface InitialState {
   [key: string]: ChannelType;
