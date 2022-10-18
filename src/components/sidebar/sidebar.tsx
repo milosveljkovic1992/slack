@@ -7,17 +7,14 @@ import { db } from 'firebase-config';
 import { Box as MUIBox } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
+import type { ChannelType } from 'store/channel';
+
 const Box = styled(MUIBox)(({ theme }) => ({
   width: '220px',
   backgroundColor: theme.palette.primary.light,
   color: theme.palette.primary.contrastText,
   padding: '10px 20px',
 }));
-
-export type ChannelType = {
-  id: string;
-  name: string;
-};
 
 export const Sidebar = () => {
   const [channels, setChannels] = useState<ChannelType[]>([]);
