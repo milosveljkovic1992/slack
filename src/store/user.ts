@@ -93,7 +93,15 @@ const userSlice = createSlice({
       state = action.payload;
     },
     resetUser(state) {
-      state = initialState;
+      state.email = initialState.email;
+      state.id = initialState.id;
+      state.lastActiveDate = initialState.lastActiveDate;
+      state.lastActiveTime = initialState.lastActiveTime;
+      state.phone = initialState.phone;
+      state.profileImage = initialState.profileImage;
+      state.role = initialState.role;
+      state.status = initialState.status;
+      state.username = initialState.username;
     },
   },
   extraReducers: (builder) => {

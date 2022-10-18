@@ -3,11 +3,13 @@ import { useDispatch } from 'react-redux';
 
 import userSlice from './user';
 import usersSlice from './users';
+import workplaceSlice from './workplace';
 
 const store = configureStore({
   reducer: {
     user: userSlice.reducer,
     users: usersSlice.reducer,
+    workplace: workplaceSlice.reducer,
   },
 });
 
