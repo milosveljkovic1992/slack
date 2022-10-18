@@ -89,24 +89,24 @@ export const Channel = () => {
     submitPending.current = false;
   };
 
+  const scrollToLastMessage = () => {
+    const lastChild = listRef.current?.lastElementChild;
+    lastChild?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  };
+
+  const q = query(
+    collection(
+      db,
+      'workplaces',
+      workplaceId,
+      'channels',
+      channelId,
+      'messages',
+    ),
+    orderBy('timestamp', 'asc'),
+  );
+
   useEffect(() => {
-    const scrollToLastMessage = () => {
-      const lastChild = listRef.current?.lastElementChild;
-      lastChild?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-    };
-
-    const q = query(
-      collection(
-        db,
-        'workplaces',
-        workplaceId,
-        'channels',
-        channelId,
-        'messages',
-      ),
-      orderBy('timestamp', 'asc'),
-    );
-
     let fetchedMessages: MessageType[] = [];
 
     const unsubscribeOnChange = onSnapshot(q, (querySnapshot) => {
