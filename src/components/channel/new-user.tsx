@@ -1,11 +1,11 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
 
+import { useSelector } from 'react-redux';
 import { nanoid } from 'nanoid';
 import { TextField } from '@mui/material';
 
 import { RootState, useAppDispatch } from 'store';
 import { registerNewUser, Role, Status } from 'store/user';
-import { useSelector } from 'react-redux';
 import { validateNewUser } from 'utils/validateNewUser';
 
 export const NewUser = () => {

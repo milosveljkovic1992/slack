@@ -5,6 +5,7 @@ import channelSlice from './channel';
 import channelsSlice from './channels';
 import userSlice from './user';
 import usersSlice from './users';
+import workplaceSlice from './workplace';
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     channels: channelsSlice.reducer,
     user: userSlice.reducer,
     users: usersSlice.reducer,
+    workplace: workplaceSlice.reducer,
   },
 });
 
