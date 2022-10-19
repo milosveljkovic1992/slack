@@ -10,6 +10,7 @@ import { RootState } from 'store';
 import {
   collection,
   doc,
+  getDoc,
   onSnapshot,
   orderBy,
   query,
@@ -46,6 +47,7 @@ export const Channel = () => {
 
   const workplaceId = useSelector((state: RootState) => state.workplace.id);
   const channelId = useSelector((state: RootState) => state.channel.id);
+  const user = useSelector((state: RootState) => state.user);
 
   const handleChange = (e: ChangeEvent) => {
     const target = e.target as HTMLInputElement;
@@ -108,8 +110,41 @@ export const Channel = () => {
     orderBy('timestamp', 'asc'),
   );
 
+  const checkIfUserIsChannelMember = async () => {
+    const userId = user.id;
+
+    const usersRef = doc(
+      db,
+      'workplaces',
+      workplaceId,
+      'channels',
+      channelId,
+      'users',
+      userId,
+    );
+
+    const docSnap = await getDoc(usersRef);
+
+    if (!docSnap.exists()) {
+      await setDoc(
+        doc(
+          db,
+          'workplaces',
+          workplaceId,
+          'channels',
+          channelId,
+          'users',
+          userId,
+        ),
+        user,
+      );
+    }
+  };
+
   useEffect(() => {
     let fetchedMessages: MessageType[] = [];
+
+    checkIfUserIsChannelMember();
 
     const unsubscribeOnChange = onSnapshot(q, (querySnapshot) => {
       querySnapshot.docChanges().forEach((change) => {
