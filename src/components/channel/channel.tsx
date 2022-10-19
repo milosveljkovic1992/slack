@@ -4,6 +4,8 @@ import { flushSync } from 'react-dom';
 import { nanoid } from 'nanoid';
 import { Box, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { useSelector } from 'react-redux';
+import { RootState } from 'store';
 
 import {
   collection,
@@ -42,8 +44,8 @@ export const Channel = () => {
   const submitPending = useRef(false);
   const listRef = useRef<HTMLDivElement>(null);
 
-  const workplaceId = 'mivel';
-  const channelId = 'general';
+  const workplaceId = useSelector((state: RootState) => state.workplace.id);
+  const channelId = useSelector((state: RootState) => state.channel.id);
 
   const handleChange = (e: ChangeEvent) => {
     const target = e.target as HTMLInputElement;
@@ -140,7 +142,7 @@ export const Channel = () => {
     });
 
     return () => unsubscribeOnChange();
-  }, []);
+  }, [channelId]);
 
   return (
     <ChannelContainer>

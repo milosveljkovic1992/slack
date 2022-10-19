@@ -4,6 +4,10 @@ import { flushSync } from 'react-dom';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { db } from 'firebase-config';
 
+import { useSelector } from 'react-redux';
+import { RootState, useAppDispatch } from 'store';
+import { enterChannel } from 'store/channel';
+
 import { styled } from '@mui/material/styles';
 import { Box as MUIBox, Link as MUILink } from '@mui/material';
 
@@ -27,8 +31,14 @@ const Box = styled(MUIBox)(({ theme }) => ({
 
 export const Sidebar = () => {
   const [channels, setChannels] = useState<ChannelType[]>([]);
+  const dispatch = useAppDispatch();
 
-  const workplaceId = 'mivel';
+  const channelId = useSelector((state: RootState) => state.channel.id);
+  const workplaceId = useSelector((state: RootState) => state.workplace.id);
+
+  const handleClick = (channel: ChannelType) => {
+    if (channel.id !== channelId) dispatch(enterChannel(channel));
+  };
 
   useEffect(() => {
     const q = query(
@@ -71,7 +81,11 @@ export const Sidebar = () => {
     <Box>
       <p>Channels:</p>
       {channels.map((channel) => (
-        <Link key={channel.id} href={channel.id}>
+        <Link
+          key={channel.id}
+          href={channel.id}
+          onClick={() => handleClick(channel)}
+        >
           # {channel.name}
         </Link>
       ))}
