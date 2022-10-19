@@ -1,14 +1,22 @@
 import { useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
 
-import { Link } from 'react-router-dom';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { db } from 'firebase-config';
 
-import { Box as MUIBox } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { Box as MUIBox, Link as MUILink } from '@mui/material';
 
 import type { ChannelType } from 'components/channel/channel.types';
+
+const Link = styled(MUILink)(() => ({
+  color: '#fff',
+  display: 'block',
+
+  '&:hover': {
+    opacity: 0.8,
+  },
+}));
 
 const Box = styled(MUIBox)(({ theme }) => ({
   width: '220px',
@@ -61,10 +69,10 @@ export const Sidebar = () => {
 
   return (
     <Box>
-      Channels:
+      <p>Channels:</p>
       {channels.map((channel) => (
-        <Link key={channel.id} to={channel.id}>
-          <p>{channel.name}</p>
+        <Link key={channel.id} href={channel.id}>
+          # {channel.name}
         </Link>
       ))}
     </Box>
