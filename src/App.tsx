@@ -1,5 +1,5 @@
-import { Workplace } from 'pages/workplace';
+import { Outlet } from 'react-router-dom';
 
 export const App = () => {
-  return <Workplace />;
+  return <Outlet />;
 };

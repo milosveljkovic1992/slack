@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
 
+import { Link } from 'react-router-dom';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { db } from 'firebase-config';
 
@@ -62,7 +63,9 @@ export const Sidebar = () => {
     <Box>
       Channels:
       {channels.map((channel) => (
-        <p key={channel.id}>{channel.name}</p>
+        <Link key={channel.id} to={channel.id}>
+          <p>{channel.name}</p>
+        </Link>
       ))}
     </Box>
   );
