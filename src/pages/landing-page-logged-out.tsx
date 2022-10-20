@@ -2,7 +2,7 @@ import { Box, Button, Grid, Typography } from '@mui/material';
 import { createPortal } from 'react-dom';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
-export const LandingPage = () => {
+export const LandingPageLoggedOut = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -22,7 +22,16 @@ export const LandingPage = () => {
     }
   }
 
+  if (location.pathname === '/log-in') {
+    if (!document.getElementById('login-modal')) {
+      const modalRoot = document.createElement('div');
+      modalRoot.setAttribute('id', 'login-modal');
+      document.body.appendChild(modalRoot);
+    }
+  }
+
   const signupModalRoot = document.getElementById('signup-modal');
+  const loginModalRoot = document.getElementById('login-modal');
 
   return (
     <>
@@ -56,6 +65,7 @@ export const LandingPage = () => {
         </Grid>
       </Box>
       {signupModalRoot && createPortal(<Outlet />, signupModalRoot)}
+      {loginModalRoot && createPortal(<Outlet />, loginModalRoot)}
     </>
   );
 };

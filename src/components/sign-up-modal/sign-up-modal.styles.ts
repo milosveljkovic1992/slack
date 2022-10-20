@@ -22,7 +22,7 @@ export const Container = styled(MUIBox)(() => ({
   justifyContent: 'center',
 
   '& > .inner-container': {
-    minHeight: '70vh',
+    minHeight: '50vh',
     width: '90%',
     maxWidth: '768px',
     padding: '30px 10px',

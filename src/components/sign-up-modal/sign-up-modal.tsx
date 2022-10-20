@@ -5,9 +5,10 @@ import { useSelector } from 'react-redux';
 import { Button } from '@mui/material';
 
 import { RootState, useAppDispatch } from 'store';
-import { Background, Container, Input } from './sign-up-modal.styles';
 import { registerNewUser, Role, Status } from 'store/user';
+
 import { validateNewUser } from 'utils/validateNewUser';
+import { Background, Container, Input } from './sign-up-modal.styles';
 
 export const SignUpModal = () => {
   const dispatch = useAppDispatch();
@@ -71,7 +72,6 @@ export const SignUpModal = () => {
 
   return (
     <>
-      <div></div>
       <Background />
       <Container>
         <div className="inner-container">

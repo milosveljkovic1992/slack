@@ -1,9 +1,9 @@
-import { App } from 'App';
-import { Channel } from 'components';
-import { Workplace } from 'pages/workplace';
-import { LandingPage } from 'pages/landing-page';
 import { createBrowserRouter } from 'react-router-dom';
-import { SignUpModal } from 'components/sign-up-modal/sign-up-modal';
+
+import { App } from 'App';
+import { Channel, LoginModal, SignUpModal } from 'components';
+import { Workplace } from 'pages/workplace';
+import { LandingPageLoggedOut } from 'pages/landing-page-logged-out';
 
 export const router = createBrowserRouter([
   {
@@ -13,11 +13,15 @@ export const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <LandingPage />,
+        element: <LandingPageLoggedOut />,
         children: [
           {
             path: '/sign-up',
             element: <SignUpModal />,
+          },
+          {
+            path: '/log-in',
+            element: <LoginModal />,
           },
         ],
       },

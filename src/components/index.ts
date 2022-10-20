@@ -1,5 +1,6 @@
 export { Channel } from 'components/channel/channel';
 export { Header } from 'components/header/header';
+export { LoginModal } from 'components/login-modal/login-modal';
 export { Message } from 'components/message/message';
-export { NewUser } from 'components/channel/new-user';
 export { Sidebar } from 'components/sidebar/sidebar';
+export { SignUpModal } from 'components/sign-up-modal/sign-up-modal';
