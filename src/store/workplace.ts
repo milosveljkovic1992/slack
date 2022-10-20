@@ -9,7 +9,7 @@ export type WorkplaceType = {
 };
 
 const initialState: WorkplaceType = {
-  id: '',
+  id: 'mivel',
   name: '',
   channels: [],
 };

@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 
+import { Outlet } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from 'firebase-config';
 
@@ -9,7 +10,7 @@ import { useAppDispatch } from 'store';
 import { Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-import { Channel, Header, Sidebar } from 'components';
+import { Header, Sidebar } from 'components';
 
 const PageLayout = styled(Box)(() => ({
   height: '100vh',
@@ -44,7 +45,7 @@ export const Workplace = () => {
       <Header />
       <Box sx={{ display: 'flex', flexDirection: 'row' }}>
         <Sidebar />
-        <Channel />
+        <Outlet />
       </Box>
     </PageLayout>
   );
