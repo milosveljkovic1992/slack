@@ -14,6 +14,7 @@ import {
 
 export const LoginModal = () => {
   const dispatch = useAppDispatch();
+  const animationRef = useRef<HTMLDivElement>(null);
   const usernameRef = useRef<HTMLDivElement>(null);
   const emailRef = useRef<HTMLDivElement>(null);
 
@@ -21,6 +22,8 @@ export const LoginModal = () => {
   let email: HTMLInputElement;
 
   useEffect(() => {
+    animationRef.current?.classList.add('fade-in', 'zoom-in');
+
     username = usernameRef.current?.firstElementChild as HTMLInputElement;
     email = emailRef.current?.firstElementChild as HTMLInputElement;
   }, []);
@@ -38,7 +41,7 @@ export const LoginModal = () => {
   return (
     <>
       <Background />
-      <Container>
+      <Container ref={animationRef}>
         <div className="inner-container">
           <h1>Log in</h1>
 

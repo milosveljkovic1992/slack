@@ -21,6 +21,15 @@ export const Container = styled(MUIBox)(() => ({
   alignItems: 'center',
   justifyContent: 'center',
 
+  transition: '0.2s ease-in-out',
+  opacity: 0,
+  transform: 'scale(0.8)',
+
+  '&.fade-in': {
+    opacity: 1,
+    transform: 'scale(1)',
+  },
+
   '& > .inner-container': {
     minHeight: '50vh',
     width: '90%',
