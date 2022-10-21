@@ -1,20 +1,39 @@
-import { Box, Button, Grid, Typography } from '@mui/material';
+import { MouseEvent, useState } from 'react';
+
 import { createPortal } from 'react-dom';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Box, Button, Grid, Typography } from '@mui/material';
+
+import { LoginModal, SignUpModal } from 'components';
 
 export const LandingPageLoggedOut = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
 
-  const handleSignUpButton = () => {
-    navigate('/sign-up');
+  const handleOpenSignupModal = () => {
+    setIsSignupModalOpen(true);
   };
 
-  const handleLogInButton = () => {
-    navigate('/log-in');
+  const handleOpenLoginModal = () => {
+    setIsLoginModalOpen(true);
   };
 
-  if (location.pathname === '/sign-up') {
+  const handleCloseSignupModal = (e: MouseEvent) => {
+    const target = e.target as HTMLDivElement;
+    if (target.closest('.inner-container')) return;
+
+    setIsSignupModalOpen(false);
+    document.getElementById('signup-modal')?.remove();
+  };
+
+  const handleCloseLoginModal = (e: MouseEvent) => {
+    const target = e.target as HTMLDivElement;
+    if (target.closest('.inner-container')) return;
+
+    setIsLoginModalOpen(false);
+    document.getElementById('login-modal')?.remove();
+  };
+
+  if (isSignupModalOpen) {
     if (!document.getElementById('signup-modal')) {
       const modalRoot = document.createElement('div');
       modalRoot.setAttribute('id', 'signup-modal');
@@ -22,7 +41,7 @@ export const LandingPageLoggedOut = () => {
     }
   }
 
-  if (location.pathname === '/log-in') {
+  if (isLoginModalOpen) {
     if (!document.getElementById('login-modal')) {
       const modalRoot = document.createElement('div');
       modalRoot.setAttribute('id', 'login-modal');
@@ -46,7 +65,7 @@ export const LandingPageLoggedOut = () => {
                 <Button
                   variant="contained"
                   size="large"
-                  onClick={handleSignUpButton}
+                  onClick={handleOpenSignupModal}
                 >
                   Sign up
                 </Button>
@@ -55,7 +74,7 @@ export const LandingPageLoggedOut = () => {
                 <Button
                   variant="contained"
                   size="large"
-                  onClick={handleLogInButton}
+                  onClick={handleOpenLoginModal}
                 >
                   Log in
                 </Button>
@@ -64,8 +83,18 @@ export const LandingPageLoggedOut = () => {
           </Grid>
         </Grid>
       </Box>
-      {signupModalRoot && createPortal(<Outlet />, signupModalRoot)}
-      {loginModalRoot && createPortal(<Outlet />, loginModalRoot)}
+      {signupModalRoot &&
+        isSignupModalOpen &&
+        createPortal(
+          <SignUpModal handleCloseModal={handleCloseSignupModal} />,
+          signupModalRoot,
+        )}
+      {loginModalRoot &&
+        isLoginModalOpen &&
+        createPortal(
+          <LoginModal handleCloseModal={handleCloseLoginModal} />,
+          loginModalRoot,
+        )}
     </>
   );
 };

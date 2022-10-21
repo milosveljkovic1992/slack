@@ -1,8 +1,9 @@
-import { FormEvent, useEffect, useRef } from 'react';
+import { FormEvent, MouseEvent, useEffect, useRef } from 'react';
 
 import { Button } from '@mui/material';
 
 import { useAppDispatch } from 'store';
+import { login } from 'store/auth';
 import { setUser, UserType } from 'store/user';
 import { checkCredentials } from 'utils/checkCredentials';
 
@@ -12,7 +13,11 @@ import {
   Input,
 } from 'components/sign-up-modal/sign-up-modal.styles';
 
-export const LoginModal = () => {
+interface LoginModalProps {
+  handleCloseModal: (e: MouseEvent) => void;
+}
+
+export const LoginModal = ({ handleCloseModal }: LoginModalProps) => {
   const dispatch = useAppDispatch();
   const animationRef = useRef<HTMLDivElement>(null);
   const usernameRef = useRef<HTMLDivElement>(null);
@@ -33,15 +38,18 @@ export const LoginModal = () => {
 
     checkCredentials(email.value, username.value).then(
       (authResult: boolean | UserType) => {
-        if (typeof authResult !== 'boolean') dispatch(setUser(authResult));
+        if (typeof authResult !== 'boolean') {
+          dispatch(setUser(authResult));
+          dispatch(login());
+        }
       },
     );
   };
 
   return (
     <>
-      <Background />
-      <Container ref={animationRef}>
+      <Background onClick={handleCloseModal} />
+      <Container ref={animationRef} onClick={handleCloseModal}>
         <div className="inner-container">
           <h1>Log in</h1>
 

@@ -1,19 +1,25 @@
-import { FormEvent, useEffect, useRef } from 'react';
+import { FormEvent, MouseEvent, useEffect, useRef } from 'react';
 
 import { nanoid } from 'nanoid';
 import { useSelector } from 'react-redux';
 import { Button } from '@mui/material';
 
 import { RootState, useAppDispatch } from 'store';
+import { login } from 'store/auth';
 import { registerNewUser, Role, Status } from 'store/user';
 
 import { validateNewUser } from 'utils/validateNewUser';
 import { Background, Container, Input } from './sign-up-modal.styles';
 
-export const SignUpModal = () => {
+interface SignUpModalProps {
+  handleCloseModal: (e: MouseEvent) => void;
+}
+
+export const SignUpModal = ({ handleCloseModal }: SignUpModalProps) => {
   const dispatch = useAppDispatch();
   const { users } = useSelector((state: RootState) => state);
 
+  const animationRef = useRef<HTMLDivElement>(null);
   const fullnameRef = useRef<HTMLDivElement>(null);
   const usernameRef = useRef<HTMLDivElement>(null);
   const phoneRef = useRef<HTMLDivElement>(null);
@@ -27,6 +33,8 @@ export const SignUpModal = () => {
   let password: HTMLInputElement;
 
   useEffect(() => {
+    animationRef.current?.classList.add('fade-in', 'zoom-in');
+
     fullName = fullnameRef.current?.firstElementChild as HTMLInputElement;
     username = usernameRef.current?.firstElementChild as HTMLInputElement;
     phone = phoneRef.current?.firstElementChild as HTMLInputElement;
@@ -64,7 +72,10 @@ export const SignUpModal = () => {
     };
 
     validateNewUser(newUser).then((isValid) => {
-      if (isValid) dispatch(registerNewUser(newUser));
+      if (isValid) {
+        dispatch(registerNewUser(newUser));
+        dispatch(login());
+      }
     });
 
     resetForm();
@@ -73,7 +84,7 @@ export const SignUpModal = () => {
   return (
     <>
       <Background />
-      <Container>
+      <Container ref={animationRef} onClick={handleCloseModal}>
         <div className="inner-container">
           <h1>Sign Up</h1>
 
