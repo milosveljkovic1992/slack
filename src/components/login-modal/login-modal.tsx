@@ -1,26 +1,38 @@
+import { FormEvent, useEffect, useRef } from 'react';
+
 import { Button } from '@mui/material';
+
+import { useAppDispatch } from 'store';
+import { setUser, UserType } from 'store/user';
+import { checkCredentials } from 'utils/checkCredentials';
+
 import {
   Background,
   Container,
   Input,
 } from 'components/sign-up-modal/sign-up-modal.styles';
-import { FormEvent, useEffect, useRef } from 'react';
 
 export const LoginModal = () => {
+  const dispatch = useAppDispatch();
   const usernameRef = useRef<HTMLDivElement>(null);
-  const passwordRef = useRef<HTMLDivElement>(null);
+  const emailRef = useRef<HTMLDivElement>(null);
 
   let username: HTMLInputElement;
-  let password: HTMLInputElement;
+  let email: HTMLInputElement;
 
   useEffect(() => {
     username = usernameRef.current?.firstElementChild as HTMLInputElement;
-    password = passwordRef.current?.firstElementChild as HTMLInputElement;
+    email = emailRef.current?.firstElementChild as HTMLInputElement;
   }, []);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    return;
+
+    checkCredentials(email.value, username.value).then(
+      (authResult: boolean | UserType) => {
+        if (typeof authResult !== 'boolean') dispatch(setUser(authResult));
+      },
+    );
   };
 
   return (
@@ -28,7 +40,7 @@ export const LoginModal = () => {
       <Background />
       <Container>
         <div className="inner-container">
-          <h1>Sign Up</h1>
+          <h1>Log in</h1>
 
           <form onSubmit={handleSubmit}>
             <div className="input-box">
@@ -37,17 +49,12 @@ export const LoginModal = () => {
             </div>
 
             <div className="input-box">
-              <label htmlFor="password">Password</label>
-              <Input
-                ref={passwordRef}
-                id="password"
-                type="password"
-                autoComplete="new-password"
-              />
+              <label htmlFor="email">Email</label>
+              <Input ref={emailRef} id="email" type="email" />
             </div>
 
             <Button type="submit" variant="contained">
-              Sign up
+              Login
             </Button>
           </form>
         </div>
