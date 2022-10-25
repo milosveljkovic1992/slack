@@ -9,6 +9,8 @@ import { login } from 'store/auth';
 import { registerNewUser, Role, Status } from 'store/user';
 
 import { validateNewUser } from 'utils/validateNewUser';
+import { saveUserToLocalStorage } from 'utils/saveUserToLocalStorage';
+
 import { Background, Container, Input } from './sign-up-modal.styles';
 
 interface SignUpModalProps {
@@ -26,25 +28,19 @@ export const SignUpModal = ({ handleCloseModal }: SignUpModalProps) => {
   const emailRef = useRef<HTMLDivElement>(null);
   const passwordRef = useRef<HTMLDivElement>(null);
 
-  let fullName: HTMLInputElement;
-  let username: HTMLInputElement;
-  let phone: HTMLInputElement;
-  let email: HTMLInputElement;
-  let password: HTMLInputElement;
-
   useEffect(() => {
     setTimeout(() => {
       animationRef.current?.classList.add('fade-in', 'zoom-in');
     }, 0);
-
-    fullName = fullnameRef.current?.firstElementChild as HTMLInputElement;
-    username = usernameRef.current?.firstElementChild as HTMLInputElement;
-    phone = phoneRef.current?.firstElementChild as HTMLInputElement;
-    email = emailRef.current?.firstElementChild as HTMLInputElement;
-    password = passwordRef.current?.firstElementChild as HTMLInputElement;
   }, []);
 
   const resetForm = () => {
+    const fullName = fullnameRef.current?.firstElementChild as HTMLInputElement;
+    const username = usernameRef.current?.firstElementChild as HTMLInputElement;
+    const phone = phoneRef.current?.firstElementChild as HTMLInputElement;
+    const email = emailRef.current?.firstElementChild as HTMLInputElement;
+    const password = passwordRef.current?.firstElementChild as HTMLInputElement;
+
     fullName.value = '';
     username.value = '';
     phone.value = '';
@@ -59,6 +55,11 @@ export const SignUpModal = ({ handleCloseModal }: SignUpModalProps) => {
     while (users[id] !== undefined) {
       id = nanoid(20);
     }
+
+    const fullName = fullnameRef.current?.firstElementChild as HTMLInputElement;
+    const username = usernameRef.current?.firstElementChild as HTMLInputElement;
+    const phone = phoneRef.current?.firstElementChild as HTMLInputElement;
+    const email = emailRef.current?.firstElementChild as HTMLInputElement;
 
     const newUser = {
       email: email.value,
@@ -77,16 +78,16 @@ export const SignUpModal = ({ handleCloseModal }: SignUpModalProps) => {
       if (isValid) {
         dispatch(registerNewUser(newUser));
         dispatch(login());
+        saveUserToLocalStorage(newUser.id);
+        resetForm();
       }
     });
-
-    resetForm();
   };
 
   return (
     <>
       <Background />
-      <Container ref={animationRef} onClick={handleCloseModal}>
+      <Container ref={animationRef} onMouseDown={handleCloseModal}>
         <div className="inner-container">
           <h1>Sign Up</h1>
 

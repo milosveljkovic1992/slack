@@ -54,7 +54,7 @@ export const LoginModal = ({ handleCloseModal }: LoginModalProps) => {
   return (
     <>
       <Background onClick={handleCloseModal} />
-      <Container ref={animationRef} onClick={handleCloseModal}>
+      <Container ref={animationRef} onMouseDown={handleCloseModal}>
         <div className="inner-container">
           <h1>Log in</h1>
 

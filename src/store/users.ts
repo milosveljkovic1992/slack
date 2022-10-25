@@ -19,7 +19,9 @@ const usersSlice = createSlice({
       });
     },
     resetUsers(state) {
-      state = initialState;
+      for (const key in state) {
+        delete state[key];
+      }
     },
     addSingleUser(state, action: PayloadAction<UserType>) {
       const { id } = action.payload;

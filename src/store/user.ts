@@ -52,7 +52,7 @@ export const registerNewUser = createAsyncThunk(
       await setDoc(doc(db, 'users', id), {
         ...user,
       });
-      addSingleUser(user);
+      thunkAPI.dispatch(addSingleUser(user));
       return user;
     } catch (error) {
       return thunkAPI.rejectWithValue('');
@@ -116,7 +116,15 @@ const userSlice = createSlice({
     builder.addCase(
       registerNewUser.fulfilled,
       (state, action: PayloadAction<UserType>) => {
-        state = action.payload;
+        state.email = action.payload.email;
+        state.id = action.payload.id;
+        state.lastActiveDate = action.payload.lastActiveDate;
+        state.lastActiveTime = action.payload.lastActiveTime;
+        state.phone = action.payload.phone;
+        state.profileImage = action.payload.profileImage;
+        state.role = action.payload.role;
+        state.status = action.payload.status;
+        state.username = action.payload.username;
       },
     );
   },
