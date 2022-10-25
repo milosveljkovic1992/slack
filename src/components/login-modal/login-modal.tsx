@@ -29,7 +29,9 @@ export const LoginModal = ({ handleCloseModal }: LoginModalProps) => {
   let email: HTMLInputElement;
 
   useEffect(() => {
-    animationRef.current?.classList.add('fade-in', 'zoom-in');
+    setTimeout(() => {
+      animationRef.current?.classList.add('fade-in', 'zoom-in');
+    }, 0);
 
     username = usernameRef.current?.firstElementChild as HTMLInputElement;
     email = emailRef.current?.firstElementChild as HTMLInputElement;

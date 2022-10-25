@@ -33,7 +33,9 @@ export const SignUpModal = ({ handleCloseModal }: SignUpModalProps) => {
   let password: HTMLInputElement;
 
   useEffect(() => {
-    animationRef.current?.classList.add('fade-in', 'zoom-in');
+    setTimeout(() => {
+      animationRef.current?.classList.add('fade-in', 'zoom-in');
+    }, 0);
 
     fullName = fullnameRef.current?.firstElementChild as HTMLInputElement;
     username = usernameRef.current?.firstElementChild as HTMLInputElement;

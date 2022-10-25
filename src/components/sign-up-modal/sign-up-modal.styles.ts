@@ -2,7 +2,7 @@ import { Box as MUIBox, Input as MUIInput, styled } from '@mui/material';
 
 export const Background = styled(MUIBox)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
-  opacity: 0.2,
+  opacity: 0.3,
   position: 'fixed',
   top: 0,
   right: 0,
@@ -21,9 +21,9 @@ export const Container = styled(MUIBox)(() => ({
   alignItems: 'center',
   justifyContent: 'center',
 
-  transition: '0.2s ease-in-out',
+  transition: '0.15s ease-in-out',
   opacity: 0,
-  transform: 'scale(0.8)',
+  transform: 'scale(0.7)',
 
   '&.fade-in': {
     opacity: 1,
