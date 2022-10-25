@@ -27,18 +27,25 @@ export const Container = styled(MUIBox)(() => ({
 
   '&.fade-in': {
     opacity: 1,
+  },
+
+  '&.zoom-in': {
     transform: 'scale(1)',
   },
 
   '& > .inner-container': {
-    minHeight: '50vh',
+    minHeight: '30vh',
     width: '90%',
     maxWidth: '768px',
-    padding: '30px 10px',
-    backgroundColor: '#fff',
+    padding: '40px 10px 50px',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    border: '1px solid #777',
+    borderRadius: '4px',
+    backdropFilter: 'blur(3px)',
 
     '& > h1': {
       textAlign: 'center',
+      marginTop: 0,
     },
 
     '& > form': {

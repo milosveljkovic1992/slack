@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 interface InitialState {
-  authenticated: boolean;
+  isAuthenticated: boolean;
 }
 
 const initialState: InitialState = {
-  authenticated: false,
+  isAuthenticated: false,
 };
 
 const authSlice = createSlice({
@@ -13,10 +13,10 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     login(state) {
-      state.authenticated = true;
+      state.isAuthenticated = true;
     },
     logout(state) {
-      state.authenticated = false;
+      state.isAuthenticated = false;
     },
   },
 });

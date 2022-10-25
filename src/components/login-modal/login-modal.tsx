@@ -5,7 +5,9 @@ import { Button } from '@mui/material';
 import { useAppDispatch } from 'store';
 import { login } from 'store/auth';
 import { setUser, UserType } from 'store/user';
+
 import { checkCredentials } from 'utils/checkCredentials';
+import { saveUserToLocalStorage } from 'utils/saveUserToLocalStorage';
 
 import {
   Background,
@@ -41,6 +43,7 @@ export const LoginModal = ({ handleCloseModal }: LoginModalProps) => {
         if (typeof authResult !== 'boolean') {
           dispatch(setUser(authResult));
           dispatch(login());
+          saveUserToLocalStorage(authResult.id);
         }
       },
     );
