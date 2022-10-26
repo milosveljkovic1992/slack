@@ -18,7 +18,7 @@ import {
 } from 'firebase/firestore';
 import { db } from 'firebase-config';
 
-import { Message, NewUser } from 'components';
+import { Message } from 'components';
 import type { MessageType } from 'components/message/message.types';
 
 const ChannelContainer = styled(Box)(() => ({
@@ -181,7 +181,6 @@ export const Channel = () => {
 
   return (
     <ChannelContainer>
-      <NewUser />
       <MessagesContainer ref={listRef}>
         {messages.map((msg) => (
           <Message key={msg.id} message={msg} />

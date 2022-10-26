@@ -21,6 +21,27 @@ const theme = createTheme({
       } as LinkProps,
     },
   },
+  typography: {
+    h1: {
+      fontSize: '3rem',
+      lineHeight: 2,
+    },
+    h2: {
+      fontSize: '2.25rem',
+    },
+    h3: {
+      fontSize: '1.875rem',
+    },
+    h4: {
+      fontSize: '1.5rem',
+    },
+    h5: {
+      fontSize: '1.25rem',
+    },
+    h6: {
+      fontSize: '1rem',
+    },
+  },
 });
 
 export const Theme = ({ children }: { children: ReactNode }) => {
