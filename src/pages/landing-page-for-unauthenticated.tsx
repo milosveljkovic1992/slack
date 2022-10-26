@@ -5,7 +5,7 @@ import { Box, Button, Grid, Typography } from '@mui/material';
 
 import { LoginModal, SignUpModal } from 'components';
 
-export const LandingPageLoggedOut = () => {
+export const LandingPageForUnauthenticated = () => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
 
