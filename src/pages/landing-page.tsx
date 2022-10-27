@@ -1,5 +1,8 @@
 import { Box, styled } from '@mui/material';
+
 import { H1, P } from 'global/Theme';
+
+import { WorkplacesList } from 'components/workplaces-list/workplaces-list';
 
 const Container = styled(Box)(() => ({
   backgroundColor: 'red',
@@ -37,9 +40,9 @@ export const LandingPage = () => {
           <H1 variant="h3">Welcome back! Everyone&apos;s waiting on you!</H1>
           <P>Choose a workspace below to get back to working with your team.</P>
         </header>
-        <section className="workplaces">
-          <div></div>
-        </section>
+        <Box width="90%" maxWidth="600px" mt={5}>
+          <WorkplacesList />
+        </Box>
       </InnerContainer>
     </Container>
   );

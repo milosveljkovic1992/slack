@@ -1,17 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import type { ChannelType } from 'components/channel/channel.types';
-
 export type WorkplaceType = {
   id: string;
   name: string;
-  channels: ChannelType[];
+  users: string[];
 };
 
 const initialState: WorkplaceType = {
   id: 'mivel',
   name: '',
-  channels: [],
+  users: [],
 };
 
 const workplaceSlice = createSlice({
@@ -21,12 +19,12 @@ const workplaceSlice = createSlice({
     setWorkplace(state, action: PayloadAction<WorkplaceType>) {
       state.id = action.payload.id;
       state.name = action.payload.name;
-      state.channels = action.payload.channels;
+      state.users = action.payload.users;
     },
     resetWorkplace(state) {
       state.id = initialState.id;
       state.name = initialState.name;
-      state.channels = initialState.channels;
+      state.users = initialState.users;
     },
   },
 });
