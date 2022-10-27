@@ -49,6 +49,11 @@ const theme = createTheme({
       fontSize: '1rem',
     },
   },
+  transitions: {
+    duration: {
+      standard: 150,
+    },
+  },
 });
 
 interface TypographyProps {
