@@ -2,6 +2,7 @@ import { BsArrowRight } from 'react-icons/bs';
 import {
   Avatar,
   Grid,
+  Link,
   ListItemAvatar,
   ListItemIcon,
   ListItemText,
@@ -24,29 +25,38 @@ export const WorkplaceListItem = ({ workplace }: WorkplaceListItemProps) => {
     .join('');
 
   return (
-    <ListItemButton>
-      <ListItemAvatar>
-        <Avatar>{avatarAbbreviation}</Avatar>
-      </ListItemAvatar>
+    <Link href={workplace.id}>
+      <ListItemButton>
+        <ListItemAvatar>
+          <Avatar>{avatarAbbreviation}</Avatar>
+        </ListItemAvatar>
 
-      <ListItemText>{workplace.name}</ListItemText>
+        <ListItemText>{workplace.name}</ListItemText>
 
-      <Grid
-        container
-        xs={2}
-        justifyContent="flex-end"
-        className="workplace-icon"
-      >
-        <Grid item xs={6} className="icon-text">
-          <P>Open</P>
+        <Grid
+          width="100px"
+          display="flex"
+          gap={1}
+          justifyContent="space-around"
+          className="workplace-icon"
+        >
+          <Grid item xs={6} className="icon-text">
+            <P>Open</P>
+          </Grid>
+
+          <Grid
+            item
+            xs={6}
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <ListItemIcon className="icon-arrow">
+              <BsArrowRight />
+            </ListItemIcon>
+          </Grid>
         </Grid>
-
-        <Grid item xs={6} display="flex" alignItems="center">
-          <ListItemIcon className="icon-arrow">
-            <BsArrowRight />
-          </ListItemIcon>
-        </Grid>
-      </Grid>
-    </ListItemButton>
+      </ListItemButton>
+    </Link>
   );
 };

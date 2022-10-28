@@ -10,10 +10,11 @@ import { Workplace } from 'pages/workplace';
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<App />} errorElement={<h1>Not found</h1>}>
+    <>
+      <Route path="/" element={<App />} errorElement={<h1>Not found</h1>} />
       <Route path="/:workplaceId" element={<Workplace />}>
         <Route path=":channelId" element={<Channel />} />
       </Route>
-    </Route>,
+    </>,
   ),
 );
