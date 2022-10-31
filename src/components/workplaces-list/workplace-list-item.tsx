@@ -31,7 +31,17 @@ export const WorkplaceListItem = ({ workplace }: WorkplaceListItemProps) => {
           <Avatar>{avatarAbbreviation}</Avatar>
         </ListItemAvatar>
 
-        <ListItemText>{workplace.name}</ListItemText>
+        <Grid container>
+          <Grid item xs={12}>
+            <ListItemText sx={{ margin: 0 }}>{workplace.name}</ListItemText>
+          </Grid>
+          <Grid item xs={12}>
+            <ListItemText sx={{ margin: 0 }}>
+              {workplace.users.length} participant
+              {(workplace.users.length - 1) % 10 !== 0 ? 's' : ''}
+            </ListItemText>
+          </Grid>
+        </Grid>
 
         <Grid
           width="100px"

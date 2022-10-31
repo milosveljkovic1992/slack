@@ -46,6 +46,9 @@ const theme = createTheme({
       fontSize: '1rem',
     },
     body1: {
+      fontSize: '15px',
+    },
+    body2: {
       fontSize: '1rem',
     },
   },
@@ -58,6 +61,7 @@ const theme = createTheme({
 
 interface TypographyProps {
   children: ReactNode;
+  [x: string]: any;
   variant?:
     | 'button'
     | 'caption'
@@ -75,89 +79,101 @@ interface TypographyProps {
     | 'overline';
 }
 
-export const H1 = ({ variant, children }: TypographyProps) => {
+export const H1 = ({ variant, children, ...restProps }: TypographyProps) => {
   return (
-    <Typography component="h1" variant={variant || 'h1'}>
+    <Typography component="h1" variant={variant || 'h1'} {...restProps}>
       {children}
     </Typography>
   );
 };
 
-export const H2 = ({ variant, children }: TypographyProps) => {
+export const H2 = ({ variant, children, ...restProps }: TypographyProps) => {
   return (
-    <Typography component="h2" variant={variant || 'h2'}>
+    <Typography component="h2" variant={variant || 'h2'} {...restProps}>
       {children}
     </Typography>
   );
 };
 
-export const H3 = ({ variant, children }: TypographyProps) => {
+export const H3 = ({ variant, children, ...restProps }: TypographyProps) => {
   return (
-    <Typography component="h3" variant={variant || 'h3'}>
+    <Typography component="h3" variant={variant || 'h3'} {...restProps}>
       {children}
     </Typography>
   );
 };
 
-export const H4 = ({ variant, children }: TypographyProps) => {
+export const H4 = ({ variant, children, ...restProps }: TypographyProps) => {
   return (
-    <Typography component="h4" variant={variant || 'h4'}>
+    <Typography component="h4" variant={variant || 'h4'} {...restProps}>
       {children}
     </Typography>
   );
 };
 
-export const H5 = ({ variant, children }: TypographyProps) => {
+export const H5 = ({ variant, children, ...restProps }: TypographyProps) => {
   return (
-    <Typography component="h5" variant={variant || 'h5'}>
+    <Typography component="h5" variant={variant || 'h5'} {...restProps}>
       {children}
     </Typography>
   );
 };
 
-export const H6 = ({ variant, children }: TypographyProps) => {
+export const H6 = ({ variant, children, ...restProps }: TypographyProps) => {
   return (
-    <Typography component="h6" variant={variant || 'h6'}>
+    <Typography component="h6" variant={variant || 'h6'} {...restProps}>
       {children}
     </Typography>
   );
 };
 
-export const P = ({ variant, children }: TypographyProps) => {
+export const P = ({ variant, children, ...restProps }: TypographyProps) => {
   return (
-    <Typography component="p" variant={variant || 'body1'}>
+    <Typography component="p" variant={variant || 'body1'} {...restProps}>
       {children}
     </Typography>
   );
 };
 
-export const P2 = ({ variant, children }: TypographyProps) => {
+export const P2 = ({ variant, children, ...restProps }: TypographyProps) => {
   return (
-    <Typography component="p" variant={variant || 'body2'}>
+    <Typography component="p" variant={variant || 'body2'} {...restProps}>
       {children}
     </Typography>
   );
 };
 
-export const Subtitle1 = ({ variant, children }: TypographyProps) => {
+export const Subtitle1 = ({
+  variant,
+  children,
+  ...restProps
+}: TypographyProps) => {
   return (
-    <Typography component="p" variant={variant || 'subtitle1'}>
+    <Typography component="p" variant={variant || 'subtitle1'} {...restProps}>
       {children}
     </Typography>
   );
 };
 
-export const Subtitle2 = ({ variant, children }: TypographyProps) => {
+export const Subtitle2 = ({
+  variant,
+  children,
+  ...restProps
+}: TypographyProps) => {
   return (
-    <Typography component="p" variant={variant || 'subtitle2'}>
+    <Typography component="p" variant={variant || 'subtitle2'} {...restProps}>
       {children}
     </Typography>
   );
 };
 
-export const Overline = ({ variant, children }: TypographyProps) => {
+export const Overline = ({
+  variant,
+  children,
+  ...restProps
+}: TypographyProps) => {
   return (
-    <Typography component="p" variant={variant || 'overline'}>
+    <Typography component="p" variant={variant || 'overline'} {...restProps}>
       {children}
     </Typography>
   );

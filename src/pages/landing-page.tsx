@@ -1,8 +1,9 @@
-import { Box, styled } from '@mui/material';
+import { Box, Grid, styled } from '@mui/material';
 
 import { H1, P } from 'global/Theme';
 
 import { WorkplacesList } from 'components/workplaces-list/workplaces-list';
+import { CreateNewWorkplace } from 'components/workplaces-list/create-new-workplace';
 
 const Container = styled(Box)(() => ({
   backgroundColor: 'red',
@@ -21,6 +22,7 @@ const InnerContainer = styled(Box)(() => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
+  gap: '40px',
   padding: '40px 20px 0',
 
   '& > header': {
@@ -40,9 +42,15 @@ export const LandingPage = () => {
           <H1 variant="h3">Welcome back! Everyone&apos;s waiting on you!</H1>
           <P>Choose a workspace below to get back to working with your team.</P>
         </header>
-        <Box width="90%" maxWidth="600px" mt={5}>
-          <WorkplacesList />
-        </Box>
+        <Grid container width="90%" maxWidth="600px" gap={5}>
+          <Grid item xs={12}>
+            <WorkplacesList />
+          </Grid>
+
+          <Grid item xs={12}>
+            <CreateNewWorkplace />
+          </Grid>
+        </Grid>
       </InnerContainer>
     </Container>
   );
