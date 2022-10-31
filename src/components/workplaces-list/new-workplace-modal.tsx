@@ -9,10 +9,12 @@ import {
   DialogContentText,
   DialogTitle,
 } from '@mui/material';
-import { validateNewWorkplace } from 'utils/validateNewWorkplace';
-import { RootState, useAppDispatch } from 'store';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+
+import { RootState, useAppDispatch } from 'store';
 import { submitNewWorkplace } from 'store/workplace';
+import { validateNewWorkplace } from 'utils/validateNewWorkplace';
 
 interface NewWorkplaceModalProps {
   open: boolean;
@@ -24,6 +26,8 @@ export const NewWorkplaceModal = ({
   handleClose,
 }: NewWorkplaceModalProps) => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   const user = useSelector((state: RootState) => state.user);
   const workplaceTitleRef = useRef<HTMLDivElement>(null);
 
@@ -40,14 +44,20 @@ export const NewWorkplaceModal = ({
       users: [user.id],
     };
 
-    validateNewWorkplace(inputElement.value).then((res) => {
-      if (res) {
-        newWorkplace.id = res.newWorkplaceId;
-        newWorkplace.name = res.newWorkplaceName;
-        dispatch(submitNewWorkplace(newWorkplace));
-        // console.log(newWorkplace);
-      }
-    });
+    validateNewWorkplace(inputElement.value)
+      .then((res) => {
+        if (res) {
+          newWorkplace.id = res.newWorkplaceId;
+          newWorkplace.name = res.newWorkplaceName;
+          dispatch(submitNewWorkplace(newWorkplace));
+          navigate(`/${newWorkplace.id}`);
+          handleClose();
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
     inputElement.value = '';
   };
 

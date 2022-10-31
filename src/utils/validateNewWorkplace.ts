@@ -21,17 +21,14 @@ export const validateNewWorkplace = async (newWorkplaceName: string) => {
       workplaces[id] = id;
 
       const isNameTaken = newWorkplaceName.toLowerCase() === name.toLowerCase();
-      if (isNameTaken) throw 'Please choose another workplace name';
+      if (isNameTaken) throw new Error('Please choose another workplace name');
     });
 
     while (workplaces[id] !== undefined) {
       id = nanoid(20);
     }
-
-    console.info('Success!');
     return { newWorkplaceName, newWorkplaceId: id };
   } catch (error) {
-    console.log(error);
-    return false;
+    if (error) throw error;
   }
 };
