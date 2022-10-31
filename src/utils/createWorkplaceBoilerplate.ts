@@ -16,11 +16,10 @@ const createChannel = async (workplaceId: string, name: string) => {
 };
 
 const verifyChannelCreated = async (workplaceId: string, channelId: string) => {
-  const createdChannel = await getDoc(
+  const channelSnap = await getDoc(
     doc(db, 'workplaces', workplaceId, 'channels', channelId),
   );
-  const isCreated = !!createdChannel.data()?.id;
-  return isCreated;
+  if (!channelSnap.exists()) throw new Error('Channel not created');
 };
 
 const createUsersCollection = async (
@@ -29,12 +28,8 @@ const createUsersCollection = async (
   user: UserType,
 ) => {
   // prettier-ignore
-  try {
-    const userRef = doc(db, 'workplaces', workplaceId, 'channels', channelId, 'users', user.id)
-    await setDoc(userRef, { user });
-  } catch (error) {
-    return error
-  }
+  const userRef = doc(db, 'workplaces', workplaceId, 'channels', channelId, 'users', user.id)
+  await setDoc(userRef, { user });
 };
 
 const verifyUsersCollectionCreated = async (
@@ -43,11 +38,10 @@ const verifyUsersCollectionCreated = async (
   userId: string,
 ) => {
   // prettier-ignore
-  const createdUser = await getDoc(
+  const userSnapshot = await getDoc(
     doc(db, 'workplaces', workplaceId, 'channels', channelId, 'users', userId),
   );
-  const isCreated = !!createdUser.data()?.id;
-  return isCreated;
+  if (!userSnapshot.exists()) throw new Error('User collection not created');
 };
 
 // prettier-ignore
@@ -57,13 +51,13 @@ const createMessagesCollection = async (
   channelName: string,
   user: UserType,
 ) => {
-  const messagesCollection = collection(db, 'workplaces', workplaceId, 'channels', channelId, 'messages')
-  
-  const messagesRef = await addDoc(messagesCollection, {
+  const notificationMessage = {
     type: 'notification',
     body: `${user.username} created "${channelName}"`,
     timestamp: new Date(),
-  });
+  }
+  const messagesCollection = collection(db, 'workplaces', workplaceId, 'channels', channelId, 'messages')
+  const messagesRef = await addDoc(messagesCollection, notificationMessage);
   
   const messagesDoc = doc(db, 'workplaces', workplaceId, 'channels', channelId, 'messages', messagesRef.id)
   await setDoc(messagesDoc, { id: messagesRef.id }, { merge: true });
@@ -72,11 +66,10 @@ const createMessagesCollection = async (
 
 // prettier-ignore
 const verifyIsMessagesCollectionCreated = async(workplaceId: string, channelId: string, messageId: string) => {
-  const createdMessage = await getDoc(
+  const messageSnapshot = await getDoc(
     doc(db, 'workplaces', workplaceId, 'channels', channelId, 'messages', messageId),
   );
-  const isCreated = !!createdMessage.data()?.id;
-  return isCreated;
+  if (!messageSnapshot.exists()) throw new Error('Messages collection not created');
 }
 
 // prettier-ignore
@@ -88,26 +81,15 @@ export const createWorkplaceBoilerplate = async (
   try {
     for (const channel of boilerplateChannels) {
       const channelId = await createChannel(workplaceId, channel);
-      const isChannelCreated = await verifyChannelCreated(
-        workplaceId,
-        channelId,
-      );
-      if (!isChannelCreated) throw 'Channel not created';
+      await verifyChannelCreated(workplaceId, channelId);
 
       await createUsersCollection(workplaceId, channelId, user);
-      const isUsersCollectionCreated = verifyUsersCollectionCreated(
-        workplaceId,
-        channelId,
-        user.id,
-      );
-      if (!isUsersCollectionCreated) throw 'Users collection not created';
+      await verifyUsersCollectionCreated(workplaceId, channelId, user.id);
 
       const messageId = await createMessagesCollection(workplaceId, channelId, channel, user);
-      const isMessagesCollectionCreated = await verifyIsMessagesCollectionCreated(workplaceId, channelId, messageId);
-      if (!isMessagesCollectionCreated) throw 'Messages collection not created'
-      
+      await verifyIsMessagesCollectionCreated(workplaceId, channelId, messageId);
     }
   } catch (error) {
-    return error
+    if (error) throw error
   }
 };

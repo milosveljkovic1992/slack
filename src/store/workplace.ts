@@ -22,12 +22,15 @@ export const submitNewWorkplace = createAsyncThunk(
       const { user } = state;
 
       try {
-        createWorkplaceBoilerplate(id, user);
+        await createWorkplaceBoilerplate(id, user);
       } catch (error) {
+        console.error(error);
         return thunkAPI.rejectWithValue('');
       }
+
       return workplace;
     } catch (error) {
+      console.error(error);
       return thunkAPI.rejectWithValue('');
     }
   },
