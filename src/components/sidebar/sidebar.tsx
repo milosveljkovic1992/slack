@@ -11,6 +11,7 @@ import { enterChannel } from 'store/channel';
 import { styled } from '@mui/material/styles';
 import { Box as MUIBox, Link as MUILink } from '@mui/material';
 import { HiHashtag } from 'react-icons/hi';
+import { BsFillPlusSquareFill } from 'react-icons/bs';
 
 import { SidebarChannel } from './sidebar-channel';
 import type { ChannelType } from 'components/channel/channel.types';
@@ -99,6 +100,11 @@ export const Sidebar = () => {
           <SidebarChannel icon={<HiHashtag />}>{channel.name}</SidebarChannel>
         </Link>
       ))}
+      <Link className="add-channel-button">
+        <SidebarChannel icon={<BsFillPlusSquareFill />}>
+          Add channels
+        </SidebarChannel>
+      </Link>
     </Box>
   );
 };
