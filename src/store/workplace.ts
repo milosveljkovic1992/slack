@@ -46,12 +46,12 @@ const workplaceSlice = createSlice({
   name: 'workplace',
   initialState,
   reducers: {
-    setWorkplace(state, action: PayloadAction<WorkplaceType>) {
+    selectWorkplace(state, action: PayloadAction<WorkplaceType>) {
       state.id = action.payload.id;
       state.name = action.payload.name;
       state.users = action.payload.users;
     },
-    resetWorkplace(state) {
+    leaveWorkplace(state) {
       state.id = initialState.id;
       state.name = initialState.name;
       state.users = initialState.users;
@@ -69,6 +69,6 @@ const workplaceSlice = createSlice({
   },
 });
 
-export const { setWorkplace, resetWorkplace } = workplaceSlice.actions;
+export const { selectWorkplace, leaveWorkplace } = workplaceSlice.actions;
 
 export default workplaceSlice;

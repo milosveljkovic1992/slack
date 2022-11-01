@@ -1,16 +1,13 @@
 import { useEffect } from 'react';
 
-import { Outlet } from 'react-router-dom';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from 'firebase-config';
-
-import { setWorkplace, WorkplaceType } from 'store/workplace';
-import { useAppDispatch } from 'store';
-
+import { Outlet, useParams } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-import { Header, Sidebar } from 'components';
+import { useAppDispatch } from 'store';
+
+import { fetchWorkplace } from 'utils/fetchWorkplace';
+import { Header, LoadingSpinner, Sidebar } from 'components';
 
 const PageLayout = styled(Box)(() => ({
   height: '100vh',
@@ -20,25 +17,21 @@ const PageLayout = styled(Box)(() => ({
 }));
 
 export const Workplace = () => {
-  const workplaceId = 'mivel';
   const dispatch = useAppDispatch();
-
-  const fetchWorkplace = async () => {
-    const workplaceRef = doc(db, 'workplaces', workplaceId);
-    const workplaceSnap = await getDoc(workplaceRef);
-    const workplaceData = workplaceSnap.data() as WorkplaceType;
-    dispatch(setWorkplace(workplaceData));
-  };
+  const params = useParams();
+  const workplaceId = params['workplaceId'] as string;
 
   useEffect(() => {
     const controller = new AbortController();
 
     fetch('', { signal: controller.signal })
-      .then(() => fetchWorkplace())
+      .then(() => fetchWorkplace(dispatch, workplaceId))
       .catch(() => null);
 
     return () => controller.abort();
   }, []);
+
+  if (!workplaceId) return <LoadingSpinner />;
 
   return (
     <PageLayout>
