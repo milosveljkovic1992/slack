@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useSelector } from 'react-redux';
 import { db } from 'firebase-config';
@@ -10,11 +10,13 @@ import { setUser, UserType } from 'store/user';
 
 import { saveUserToLocalStorage } from 'utils/saveUserToLocalStorage';
 
+import { LoadingSpinner } from 'components';
 import { LandingPage, LandingPageForUnauthenticated } from 'pages';
 
 export const App = () => {
   const dispatch = useAppDispatch();
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const [authCheckComplete, setAuthCheckComplete] = useState(false);
 
   useEffect(() => {
     const userAuth = localStorage.getItem('auth');
@@ -44,6 +46,7 @@ export const App = () => {
         localStorage.removeItem('auth');
       }
     }
+    setAuthCheckComplete(true);
 
     return () => {
       const userAuth = localStorage.getItem('auth');
@@ -61,6 +64,9 @@ export const App = () => {
     };
   }, []);
 
-  if (!isAuthenticated) return <LandingPageForUnauthenticated />;
-  return <LandingPage />;
+  if (authCheckComplete) {
+    if (isAuthenticated) return <LandingPage />;
+    if (!isAuthenticated) return <LandingPageForUnauthenticated />;
+  }
+  return <LoadingSpinner />;
 };
