@@ -1,10 +1,13 @@
 import { useEffect } from 'react';
 
 import { Outlet, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-import { useAppDispatch } from 'store';
+import { RootState, useAppDispatch } from 'store';
+import { leaveChannel } from 'store/channel';
+import { enterWorkplace, leaveWorkplace } from 'store/workplace';
 
 import { fetchWorkplace } from 'utils/fetchWorkplace';
 import { Header, LoadingSpinner, Sidebar } from 'components';
@@ -19,16 +22,22 @@ const PageLayout = styled(Box)(() => ({
 export const Workplace = () => {
   const dispatch = useAppDispatch();
   const params = useParams();
-  const workplaceId = params['workplaceId'] as string;
+  const workplaceParamsId = params['workplaceId'] as string;
+  const workplaceId = useSelector((state: RootState) => state.workplace.id);
 
   useEffect(() => {
     const controller = new AbortController();
 
     fetch('', { signal: controller.signal })
-      .then(() => fetchWorkplace(dispatch, workplaceId))
+      .then(() => fetchWorkplace(workplaceParamsId))
+      .then((workplace) => dispatch(enterWorkplace(workplace)))
       .catch(() => null);
 
-    return () => controller.abort();
+    return () => {
+      controller.abort();
+      dispatch(leaveChannel());
+      dispatch(leaveWorkplace());
+    };
   }, []);
 
   if (!workplaceId) return <LoadingSpinner />;

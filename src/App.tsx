@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { Outlet } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { db } from 'firebase-config';
 import { doc, getDoc } from 'firebase/firestore';
@@ -11,7 +12,7 @@ import { setUser, UserType } from 'store/user';
 import { saveUserToLocalStorage } from 'utils/saveUserToLocalStorage';
 
 import { LoadingSpinner } from 'components';
-import { LandingPage, LandingPageForUnauthenticated } from 'pages';
+import { LandingPageForUnauthenticated } from 'pages';
 
 export const App = () => {
   const dispatch = useAppDispatch();
@@ -65,7 +66,7 @@ export const App = () => {
   }, []);
 
   if (authCheckComplete) {
-    if (isAuthenticated) return <LandingPage />;
+    if (isAuthenticated) return <Outlet />;
     if (!isAuthenticated) return <LandingPageForUnauthenticated />;
   }
   return <LoadingSpinner />;

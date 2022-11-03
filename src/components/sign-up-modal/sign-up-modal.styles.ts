@@ -1,7 +1,7 @@
 import { Box as MUIBox, Input as MUIInput, styled } from '@mui/material';
 
 export const Background = styled(MUIBox)(({ theme }) => ({
-  backgroundColor: theme.palette.primary.main,
+  backgroundColor: theme.palette.primary.dark,
   opacity: 0.3,
   position: 'fixed',
   top: 0,

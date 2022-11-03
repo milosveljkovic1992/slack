@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
 
+import { useParams } from 'react-router-dom';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { db } from 'firebase-config';
 
@@ -10,26 +11,38 @@ import { enterChannel } from 'store/channel';
 
 import { styled } from '@mui/material/styles';
 import { Box as MUIBox, Link as MUILink } from '@mui/material';
+import { HiHashtag } from 'react-icons/hi';
+import { BsFillPlusSquareFill } from 'react-icons/bs';
 
+import { SidebarChannel } from './sidebar-channel';
 import type { ChannelType } from 'components/channel/channel.types';
 
-const Link = styled(MUILink)(() => ({
+const Link = styled(MUILink)(({ theme }) => ({
   color: '#fff',
   display: 'block',
 
-  '&:hover': {
-    opacity: 0.8,
+  '&:hover, &:focus': {
+    backgroundColor: theme.palette.primary.dark,
+  },
+
+  '&.active': {
+    backgroundColor: '#1164A3',
   },
 }));
 
 const Box = styled(MUIBox)(({ theme }) => ({
-  width: '220px',
+  minWidth: '220px',
+  width: 'auto',
   backgroundColor: theme.palette.primary.light,
   color: theme.palette.primary.contrastText,
-  padding: '10px 20px',
+
+  '& > *': {
+    padding: '0 15px',
+  },
 }));
 
 export const Sidebar = () => {
+  const params = useParams();
   const [channels, setChannels] = useState<ChannelType[]>([]);
   const dispatch = useAppDispatch();
 
@@ -37,7 +50,7 @@ export const Sidebar = () => {
   const workplaceId = useSelector((state: RootState) => state.workplace.id);
 
   const handleClick = (channel: ChannelType) => {
-    if (channel.id !== channelId) dispatch(enterChannel(channel));
+    if (channel.id !== params['channelId']) dispatch(enterChannel(channel));
   };
 
   useEffect(() => {
@@ -51,21 +64,20 @@ export const Sidebar = () => {
     const unsubscribeOnChange = onSnapshot(q, (querySnapshot) => {
       querySnapshot.docChanges().forEach((change) => {
         const singleChannel = change.doc.data() as ChannelType;
-
-        if (change.type === 'added') {
-          fetchedChannels = [...fetchedChannels, singleChannel];
-        }
-
-        if (change.type === 'modified') {
-          fetchedChannels = channels.map((channel) =>
-            channel.id === singleChannel.id ? singleChannel : channel,
-          );
-        }
-
-        if (change.type === 'removed') {
-          fetchedChannels = channels.filter(
-            (channel) => channel.id !== singleChannel.id,
-          );
+        switch (change.type) {
+          case 'added':
+            fetchedChannels = [...fetchedChannels, singleChannel];
+            break;
+          case 'modified':
+            fetchedChannels = channels.map((channel) =>
+              channel.id === singleChannel.id ? singleChannel : channel,
+            );
+            break;
+          case 'removed':
+            fetchedChannels = channels.filter(
+              (channel) => channel.id !== singleChannel.id,
+            );
+            break;
         }
       });
 
@@ -85,10 +97,16 @@ export const Sidebar = () => {
           key={channel.id}
           href={channel.id}
           onClick={() => handleClick(channel)}
+          className={channelId === channel.id ? 'active' : ''}
         >
-          # {channel.name}
+          <SidebarChannel icon={<HiHashtag />}>{channel.name}</SidebarChannel>
         </Link>
       ))}
+      <Link className="add-channel-button">
+        <SidebarChannel icon={<BsFillPlusSquareFill />}>
+          Add channels
+        </SidebarChannel>
+      </Link>
     </Box>
   );
 };

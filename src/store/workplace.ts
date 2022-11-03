@@ -37,7 +37,7 @@ export const submitNewWorkplace = createAsyncThunk(
 );
 
 const initialState: WorkplaceType = {
-  id: 'mivel',
+  id: '',
   name: '',
   users: [],
 };
@@ -46,7 +46,7 @@ const workplaceSlice = createSlice({
   name: 'workplace',
   initialState,
   reducers: {
-    selectWorkplace(state, action: PayloadAction<WorkplaceType>) {
+    enterWorkplace(state, action: PayloadAction<WorkplaceType>) {
       state.id = action.payload.id;
       state.name = action.payload.name;
       state.users = action.payload.users;
@@ -69,6 +69,6 @@ const workplaceSlice = createSlice({
   },
 });
 
-export const { selectWorkplace, leaveWorkplace } = workplaceSlice.actions;
+export const { enterWorkplace, leaveWorkplace } = workplaceSlice.actions;
 
 export default workplaceSlice;

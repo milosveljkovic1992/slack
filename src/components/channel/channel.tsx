@@ -2,44 +2,30 @@ import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 
 import { nanoid } from 'nanoid';
-import { Box, TextField } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { RootState } from 'store';
+import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
+import { TextField } from '@mui/material';
 
-import {
-  collection,
-  doc,
-  getDoc,
-  onSnapshot,
-  orderBy,
-  query,
-  setDoc,
-} from 'firebase/firestore';
 import { db } from 'firebase-config';
+import { RootState, useAppDispatch } from 'store';
+import { enterChannel, leaveChannel } from 'store/channel';
+import { checkIfUserIsChannelMember } from 'utils/checkIfUserIsChannelMember';
+import { fetchChannelById } from 'utils/fetchChannelById';
+import { submitMessageToFirebase } from 'utils/submitMessageToFirebase';
 
 import { Message } from 'components';
+import {
+  ChannelContainer,
+  MessageInput,
+  MessagesContainer,
+} from './channel.styles';
 import type { MessageType } from 'components/message/message.types';
 
-const ChannelContainer = styled(Box)(() => ({
-  width: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'flex-end',
-  maxHeight: '95vh',
-}));
-
-const MessagesContainer = styled(Box)(() => ({
-  padding: '10px 20px 0',
-  overflowY: 'auto',
-}));
-
-const MessageInput = styled(Box)(() => ({
-  width: '100%',
-  display: 'block',
-}));
-
 export const Channel = () => {
+  const params = useParams();
+  const dispatch = useAppDispatch();
+
   const [messageInput, setMessageInput] = useState('');
   const [messages, setMessages] = useState<MessageType[]>([]);
   const submitPending = useRef(false);
@@ -54,7 +40,7 @@ export const Channel = () => {
     setMessageInput(target.value);
   };
 
-  const submitMessageToFirebase = async () => {
+  const submitNewMessage = async () => {
     const newMessage = {
       id: nanoid(20),
       senderUsername: 'MyLosh',
@@ -65,19 +51,7 @@ export const Channel = () => {
 
     try {
       submitPending.current = true;
-
-      await setDoc(
-        doc(
-          db,
-          'workplaces',
-          workplaceId,
-          'channels',
-          channelId,
-          'messages',
-          newMessage.id,
-        ),
-        newMessage,
-      );
+      submitMessageToFirebase(workplaceId, channelId, newMessage);
     } catch (error) {
       submitPending.current = false;
       return;
@@ -88,7 +62,7 @@ export const Channel = () => {
     e.preventDefault();
     if (!messageInput.trim().length || submitPending.current) return;
 
-    submitMessageToFirebase();
+    submitNewMessage();
     setMessageInput('');
     submitPending.current = false;
   };
@@ -98,86 +72,75 @@ export const Channel = () => {
     lastChild?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   };
 
-  const q = query(
-    collection(
-      db,
-      'workplaces',
-      workplaceId,
-      'channels',
-      channelId,
-      'messages',
-    ),
-    orderBy('timestamp', 'asc'),
-  );
+  useEffect(() => {
+    const controller = new AbortController();
 
-  const checkIfUserIsChannelMember = async () => {
-    const userId = user.id;
+    const channelParamsId = params['channelId'] as string;
+    if (!channelParamsId) return;
 
-    const usersRef = doc(
-      db,
-      'workplaces',
-      workplaceId,
-      'channels',
-      channelId,
-      'users',
-      userId,
-    );
+    fetch('', { signal: controller.signal })
+      .then(() => fetchChannelById(workplaceId, channelParamsId))
+      .then((channel) => dispatch(enterChannel(channel)))
+      .catch(() => null);
 
-    const docSnap = await getDoc(usersRef);
-
-    if (!docSnap.exists()) {
-      await setDoc(
-        doc(
-          db,
-          'workplaces',
-          workplaceId,
-          'channels',
-          channelId,
-          'users',
-          userId,
-        ),
-        user,
-      );
-    }
-  };
+    return () => {
+      controller.abort();
+      dispatch(leaveChannel());
+    };
+  }, []);
 
   useEffect(() => {
     let fetchedMessages: MessageType[] = [];
 
-    checkIfUserIsChannelMember();
+    if (workplaceId && channelId && user.id) {
+      checkIfUserIsChannelMember(workplaceId, channelId, user);
+    }
 
-    const unsubscribeOnChange = onSnapshot(q, (querySnapshot) => {
-      querySnapshot.docChanges().forEach((change) => {
-        const singleMessage = change.doc.data() as MessageType;
+    if (workplaceId && channelId) {
+      const messagesRef = collection(
+        db,
+        'workplaces',
+        workplaceId,
+        'channels',
+        channelId,
+        'messages',
+      );
 
-        if (change.type === 'added') {
-          fetchedMessages = [...fetchedMessages, singleMessage];
-        }
+      const q = query(messagesRef, orderBy('timestamp', 'asc'));
 
-        if (change.type === 'modified') {
-          fetchedMessages = messages.map((msg) =>
-            msg.id === singleMessage.id ? singleMessage : msg,
-          );
-        }
+      const unsubscribeOnChange = onSnapshot(q, (querySnapshot) => {
+        querySnapshot.docChanges().forEach((change) => {
+          const singleMessage = change.doc.data() as MessageType;
 
-        if (change.type === 'removed') {
-          fetchedMessages = messages.filter(
-            (msg) => msg.id !== singleMessage.id,
-          );
-        }
+          if (change.type === 'added') {
+            fetchedMessages = [...fetchedMessages, singleMessage];
+          }
+
+          if (change.type === 'modified') {
+            fetchedMessages = messages.map((msg) =>
+              msg.id === singleMessage.id ? singleMessage : msg,
+            );
+          }
+
+          if (change.type === 'removed') {
+            fetchedMessages = messages.filter(
+              (msg) => msg.id !== singleMessage.id,
+            );
+          }
+        });
+
+        flushSync(() => {
+          setMessages(fetchedMessages);
+        });
+
+        querySnapshot.docChanges().forEach((change) => {
+          if (change.type === 'added') scrollToLastMessage();
+        });
       });
 
-      flushSync(() => {
-        setMessages(fetchedMessages);
-      });
-
-      querySnapshot.docChanges().forEach((change) => {
-        if (change.type === 'added') scrollToLastMessage();
-      });
-    });
-
-    return () => unsubscribeOnChange();
-  }, [channelId]);
+      return () => unsubscribeOnChange();
+    }
+  }, [workplaceId, channelId]);
 
   return (
     <ChannelContainer>

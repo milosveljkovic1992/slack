@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles';
 
 const Box = styled(MUIBox)(({ theme }) => ({
   color: theme.palette.primary.contrastText,
-  backgroundColor: theme.palette.primary.main,
+  backgroundColor: theme.palette.primary.dark,
 }));
 
 export const Header = () => {
