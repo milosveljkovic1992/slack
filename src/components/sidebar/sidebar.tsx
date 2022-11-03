@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
 
+import { useParams } from 'react-router-dom';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { db } from 'firebase-config';
 
@@ -41,6 +42,7 @@ const Box = styled(MUIBox)(({ theme }) => ({
 }));
 
 export const Sidebar = () => {
+  const params = useParams();
   const [channels, setChannels] = useState<ChannelType[]>([]);
   const dispatch = useAppDispatch();
 
@@ -48,7 +50,7 @@ export const Sidebar = () => {
   const workplaceId = useSelector((state: RootState) => state.workplace.id);
 
   const handleClick = (channel: ChannelType) => {
-    if (channel.id !== channelId) dispatch(enterChannel(channel));
+    if (channel.id !== params['channelId']) dispatch(enterChannel(channel));
   };
 
   useEffect(() => {
