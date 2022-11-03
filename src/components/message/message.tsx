@@ -1,4 +1,4 @@
-import { Card } from '@mui/material';
+import { Avatar, Card } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 import type { MessageType } from './message.types';
@@ -17,8 +17,17 @@ export const Message = ({ message }: MessageProps) => {
     ? new Date(message.timestamp.seconds * 1000).toLocaleTimeString()
     : '';
 
+  const avatarContent = message.senderUsername
+    ? message.senderUsername
+        .split(' ')
+        .slice(0, 2)
+        .map((word) => word[0])
+        .join('')
+    : 'N';
+
   return (
     <MessageCard>
+      <Avatar>{avatarContent}</Avatar>
       <div className="message-meta">
         <b>{message.senderUsername}</b>
         <span style={{ fontSize: '0.75rem', marginLeft: '5px' }}>
