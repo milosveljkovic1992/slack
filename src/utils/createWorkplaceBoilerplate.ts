@@ -1,5 +1,6 @@
 import { db } from 'firebase-config';
 import { addDoc, collection, doc, getDoc, setDoc } from 'firebase/firestore';
+import { nanoid } from 'nanoid';
 import { UserType } from 'store/user';
 
 const createChannel = async (workplaceId: string, name: string) => {
@@ -52,15 +53,14 @@ const createMessagesCollection = async (
   user: UserType,
 ) => {
   const notificationMessage = {
-    type: 'notification',
-    body: `${user.username} created "${channelName}"`,
-    timestamp: new Date(),
+      id: nanoid(20),
+      senderUsername: user.username,
+      senderId: user.id,
+      body: `${user.username} joined "${channelName}"`,
+      timestamp: new Date(),
   }
   const messagesCollection = collection(db, 'workplaces', workplaceId, 'channels', channelId, 'messages')
   const messagesRef = await addDoc(messagesCollection, notificationMessage);
-  
-  const messagesDoc = doc(db, 'workplaces', workplaceId, 'channels', channelId, 'messages', messagesRef.id)
-  await setDoc(messagesDoc, { id: messagesRef.id }, { merge: true });
   return messagesRef.id;
 };
 
