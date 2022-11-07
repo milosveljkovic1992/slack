@@ -13,8 +13,3 @@ export const MessagesContainer = styled(Box)(() => ({
   padding: '10px 20px 0',
   overflowY: 'auto',
 }));
-
-export const MessageInput = styled(Box)(() => ({
-  width: '100%',
-  display: 'block',
-}));

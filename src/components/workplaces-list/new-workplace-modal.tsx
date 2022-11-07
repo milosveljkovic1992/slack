@@ -30,6 +30,7 @@ export const NewWorkplaceModal = ({
 
   const user = useSelector((state: RootState) => state.user);
   const workplaceTitleRef = useRef<HTMLDivElement>(null);
+  const submitButtonRef = useRef<HTMLButtonElement>(null);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -45,11 +46,11 @@ export const NewWorkplaceModal = ({
     };
 
     validateNewWorkplace(inputElement.value)
-      .then((res) => {
+      .then(async (res) => {
         if (res) {
           newWorkplace.id = res.newWorkplaceId;
           newWorkplace.name = res.newWorkplaceName;
-          dispatch(submitNewWorkplace(newWorkplace));
+          await dispatch(submitNewWorkplace(newWorkplace));
           navigate(`/${newWorkplace.id}`);
           handleClose();
         }
@@ -58,6 +59,7 @@ export const NewWorkplaceModal = ({
         console.error(error);
       });
 
+    if (submitButtonRef.current) submitButtonRef.current.disabled = true;
     inputElement.value = '';
   };
 
@@ -87,7 +89,7 @@ export const NewWorkplaceModal = ({
         <Button onClick={handleClose} variant="outlined">
           Cancel
         </Button>
-        <Button onClick={handleSubmit} variant="outlined">
+        <Button onClick={handleSubmit} variant="outlined" ref={submitButtonRef}>
           Create
         </Button>
       </DialogActions>

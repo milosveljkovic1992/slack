@@ -8,4 +8,5 @@ export type MessageType = {
   senderUsername: string;
   body: string;
   timestamp: timestamp;
+  type?: string;
 };

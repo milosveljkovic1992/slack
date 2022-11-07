@@ -1,25 +1,22 @@
-import { db } from 'firebase-config';
-import { doc, getDoc } from 'firebase/firestore';
-import { UserType } from 'store/user';
-import { submitUserToChannel } from './submitUserToChannel';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
+import { db } from 'firebase-config';
+import { userJoinedNotification } from './userJoinedNotification';
+import { UserType } from 'store/user';
+
+// prettier-ignore
 export const checkIfUserIsChannelMember = async (
   workplaceId: string,
   channelId: string,
+  channelName: string,
   user: UserType,
 ) => {
-  const usersRef = doc(
-    db,
-    'workplaces',
-    workplaceId,
-    'channels',
-    channelId,
-    'users',
-    user.id,
-  );
-
+  const usersRef = doc(db, 'workplaces', workplaceId, 'channels', channelId, 'users', user.id);
   const docSnap = await getDoc(usersRef);
+  const isMember = docSnap.exists();
 
-  if (!docSnap.exists())
-    await submitUserToChannel(workplaceId, channelId, user);
+  if (!isMember) {
+    await setDoc(usersRef, user);
+    await userJoinedNotification( workplaceId, channelId, channelName, user);
+  }
 };

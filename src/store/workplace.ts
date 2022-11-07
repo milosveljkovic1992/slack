@@ -18,11 +18,9 @@ export const submitNewWorkplace = createAsyncThunk(
       await setDoc(doc(db, 'workplaces', id), {
         ...workplace,
       });
-      const state = thunkAPI.getState() as RootState;
-      const { user } = state;
 
       try {
-        await createWorkplaceBoilerplate(id, user);
+        await createWorkplaceBoilerplate(id);
       } catch (error) {
         console.error(error);
         return thunkAPI.rejectWithValue('');
