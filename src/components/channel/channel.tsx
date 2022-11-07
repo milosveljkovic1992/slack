@@ -22,9 +22,7 @@ export const Channel = () => {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const listRef = useRef<HTMLDivElement>(null);
 
-  const workplaceId = useSelector((state: RootState) => state.workplace.id);
-  const channelId = useSelector((state: RootState) => state.channel.id);
-  const user = useSelector((state: RootState) => state.user);
+  const { workplace, channel, user } = useSelector((state: RootState) => state);
 
   const scrollToLastMessage = () => {
     const lastChild = listRef.current?.lastElementChild;
@@ -38,7 +36,7 @@ export const Channel = () => {
     if (!channelParamsId) return;
 
     fetch('', { signal: controller.signal })
-      .then(() => fetchChannelById(workplaceId, channelParamsId))
+      .then(() => fetchChannelById(workplace.id, channelParamsId))
       .then((channel) => dispatch(enterChannel(channel)))
       .catch(() => null);
 
@@ -51,17 +49,17 @@ export const Channel = () => {
   useEffect(() => {
     let fetchedMessages: MessageType[] = [];
 
-    if (workplaceId && channelId && user.id) {
-      checkIfUserIsChannelMember(workplaceId, channelId, user);
+    if (workplace.id && channel.id && user.id) {
+      checkIfUserIsChannelMember(workplace.id, channel.id, channel.name, user);
     }
 
-    if (workplaceId && channelId) {
+    if (workplace.id && channel.id) {
       const messagesRef = collection(
         db,
         'workplaces',
-        workplaceId,
+        workplace.id,
         'channels',
-        channelId,
+        channel.id,
         'messages',
       );
 
@@ -99,7 +97,7 @@ export const Channel = () => {
 
       return () => unsubscribeOnChange();
     }
-  }, [workplaceId, channelId]);
+  }, [workplace.id, channel.id]);
 
   return (
     <ChannelContainer>
@@ -108,7 +106,7 @@ export const Channel = () => {
           <Message key={msg.id} message={msg} />
         ))}
       </MessagesContainer>
-      <MessageInput workplaceId={workplaceId} channelId={channelId} />
+      <MessageInput workplaceId={workplace.id} channelId={channel.id} />
     </ChannelContainer>
   );
 };
