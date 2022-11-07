@@ -8,9 +8,12 @@ interface MessageProps {
 }
 
 const MessageCard = styled(Grid)(() => ({
-  border: '1px solid red',
-  gridTemplateAreas: `"avatar metadata"
-        "avatar body"`,
+  display: 'grid',
+  gridTemplateColumns: '36px 1fr',
+  gridTemplateAreas: `
+      "avatar metadata"
+      "avatar body"`,
+  columnGap: '4px',
   boxShadow: 'none',
 }));
 
@@ -30,20 +33,27 @@ export const Message = ({ message }: MessageProps) => {
   return (
     <MessageCard container>
       <Grid item gridArea="avatar">
-        <Avatar>{avatarContent}</Avatar>
+        <Avatar
+          sx={{
+            height: '36px',
+            width: '36px',
+            borderRadius: '20%',
+            marginTop: '6px',
+          }}
+        >
+          {avatarContent}
+        </Avatar>
       </Grid>
-      <Grid item width="100%" gridArea="metadata">
-        <div className="message-meta">
-          <b>{message.senderUsername}</b>
-          <span style={{ fontSize: '0.75rem', marginLeft: '5px' }}>
-            {timestamp}
-          </span>
-        </div>
-        <Grid item gridArea="body">
-          <p style={{ marginBottom: '0.5rem', marginTop: '0.25rem' }}>
-            {message.body}
-          </p>
-        </Grid>
+      <Grid item gridArea="metadata" className="message-meta">
+        <b>{message.senderUsername}</b>
+        <span style={{ fontSize: '0.75rem', marginLeft: '5px' }}>
+          {timestamp}
+        </span>
+      </Grid>
+      <Grid item gridArea="body">
+        <p style={{ marginBottom: '0.5rem', marginTop: '0', lineHeight: 1 }}>
+          {message.body}
+        </p>
       </Grid>
     </MessageCard>
   );
