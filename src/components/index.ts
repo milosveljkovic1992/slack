@@ -1,4 +1,5 @@
 export { Channel } from 'components/channel/channel';
+export { CreateChannelModal } from 'components/create-channel-modal/create-channel-modal';
 export { Header } from 'components/header/header';
 export { LoadingSpinner } from 'components/loading-spinner/loading-spinner';
 export { LoginModal } from 'components/login-modal/login-modal';

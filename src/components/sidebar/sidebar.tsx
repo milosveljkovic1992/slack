@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { MouseEvent, useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
 
 import { useParams } from 'react-router-dom';
@@ -15,6 +15,7 @@ import { HiHashtag } from 'react-icons/hi';
 import { BsFillPlusSquareFill } from 'react-icons/bs';
 
 import { SidebarChannel } from './sidebar-channel';
+import { CreateChannelModal } from 'components';
 import type { ChannelType } from 'components/channel/channel.types';
 
 const Link = styled(MUILink)(({ theme }) => ({
@@ -43,11 +44,27 @@ const Box = styled(MUIBox)(({ theme }) => ({
 
 export const Sidebar = () => {
   const params = useParams();
-  const [channels, setChannels] = useState<ChannelType[]>([]);
   const dispatch = useAppDispatch();
+  const [channels, setChannels] = useState<ChannelType[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const channelId = useSelector((state: RootState) => state.channel.id);
   const workplaceId = useSelector((state: RootState) => state.workplace.id);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleBackgroundClick = (e: MouseEvent) => {
+    const target = e.target as Element;
+    if (target.closest('.inner-container')) return;
+
+    closeModal();
+  };
 
   const handleClick = (channel: ChannelType) => {
     if (channel.id !== params['channelId']) dispatch(enterChannel(channel));
@@ -69,7 +86,7 @@ export const Sidebar = () => {
             fetchedChannels = [...fetchedChannels, singleChannel];
             break;
           case 'modified':
-            fetchedChannels = channels.map((channel) =>
+            fetchedChannels = fetchedChannels.map((channel) =>
               channel.id === singleChannel.id ? singleChannel : channel,
             );
             break;
@@ -90,23 +107,30 @@ export const Sidebar = () => {
   }, []);
 
   return (
-    <Box>
-      <p>Channels:</p>
-      {channels.map((channel) => (
-        <Link
-          key={channel.id}
-          href={channel.id}
-          onClick={() => handleClick(channel)}
-          className={channelId === channel.id ? 'active' : ''}
-        >
-          <SidebarChannel icon={<HiHashtag />}>{channel.name}</SidebarChannel>
+    <>
+      <Box>
+        <p>Channels:</p>
+        {channels.map((channel) => (
+          <Link
+            key={channel.id}
+            href={channel.id}
+            onClick={() => handleClick(channel)}
+            className={channelId === channel.id ? 'active' : ''}
+          >
+            <SidebarChannel icon={<HiHashtag />}>{channel.name}</SidebarChannel>
+          </Link>
+        ))}
+        <Link className="add-channel-button" onClick={openModal}>
+          <SidebarChannel icon={<BsFillPlusSquareFill />}>
+            Add channels
+          </SidebarChannel>
         </Link>
-      ))}
-      <Link className="add-channel-button">
-        <SidebarChannel icon={<BsFillPlusSquareFill />}>
-          Add channels
-        </SidebarChannel>
-      </Link>
-    </Box>
+      </Box>
+      <CreateChannelModal
+        isOpen={isModalOpen}
+        closeModal={closeModal}
+        handleBackgroundClick={handleBackgroundClick}
+      />
+    </>
   );
 };
