@@ -6,6 +6,7 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
+  DialogContentText,
   DialogTitle,
   Input,
 } from '@mui/material';
@@ -20,14 +21,14 @@ export const CreateChannelModal = ({
 }: CreateChannelModalProps) => {
   const params = useParams();
   const navigate = useNavigate();
-  const [channelName, setChannelName] = useState('');
+  const [channelName, setChannelName] = useState<string>('');
   const [error, setError] = useState('');
 
   const inputRef = useRef<HTMLInputElement>(null);
   const submitPending = useRef(false);
 
   const parseInput = (input: string) => {
-    return input.toLowerCase().replace(/\W/g, '-');
+    return input.toLowerCase().replace(/\s/g, '-');
   };
 
   const handleChange = (e: ChangeEvent) => {
@@ -41,10 +42,14 @@ export const CreateChannelModal = ({
 
     const workplaceId = params['workplaceId'];
     const channelName = inputRef.current?.value;
-    const startsWithCharacter = !!channelName && channelName[0] !== '-';
+    const startsWithCharacter = !!channelName && !!channelName.match(/^\w/i);
+    const hasPunctuation = !!channelName && channelName.match(/[^\w\s-]|_/gi);
 
     if (!startsWithCharacter) {
-      setError('name must start with a letter or a number');
+      setError('Channel name must start with a letter or a number');
+    } else if (hasPunctuation) {
+      setError(`Channel names can’t contain spaces, periods, or most punctuation. 
+      Try again?`);
     } else {
       if (workplaceId && channelName && !submitPending.current) {
         submitPending.current = true;
@@ -59,19 +64,29 @@ export const CreateChannelModal = ({
     if (!isOpen) {
       submitPending.current = false;
       setChannelName('');
+      setError('');
     }
   }, [isOpen]);
 
   return (
     <Dialog open={isOpen} onClick={handleBackgroundClick}>
       <DialogContent
-        sx={{ width: '400px', padding: '20px 40px' }}
+        sx={{ width: 'auto', maxWidth: '440px', padding: '20px 40px' }}
         className="inner-container"
       >
-        <DialogTitle pl={[0]}>Create channel</DialogTitle>
+        <DialogTitle pl={[0]} variant="h4" fontWeight={600} letterSpacing={-1}>
+          Create a channel
+        </DialogTitle>
+        <DialogContentText mb={2}>
+          Channels are where your team communicates. They’re best when organized
+          around a topic — #marketing, for example.
+        </DialogContentText>
         <form onSubmit={handleSubmit}>
-          <label htmlFor="channel-name-input" style={{ fontSize: '0.875rem' }}>
-            Enter channel name{' '}
+          <label
+            htmlFor="channel-name-input"
+            style={{ fontSize: '0.875rem', fontWeight: 600 }}
+          >
+            Name
             {error && (
               <span style={{ color: 'red', display: 'block' }}>{error}</span>
             )}
@@ -88,7 +103,9 @@ export const CreateChannelModal = ({
 
           <DialogActions>
             <Button onClick={closeModal}>Cancel</Button>
-            <Button type="submit">Create</Button>
+            <Button type="submit" disabled={!!error}>
+              Create
+            </Button>
           </DialogActions>
         </form>
       </DialogContent>
