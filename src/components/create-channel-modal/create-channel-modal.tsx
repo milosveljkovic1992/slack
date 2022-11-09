@@ -14,6 +14,8 @@ import {
 import { createNewChannel } from 'utils/createNewChannel';
 import { CreateChannelModalProps } from './create-channel-modal.types';
 
+let inputInitiated = false;
+
 export const CreateChannelModal = ({
   isOpen,
   closeModal,
@@ -32,7 +34,7 @@ export const CreateChannelModal = ({
   };
 
   const handleChange = (e: ChangeEvent) => {
-    if (error) setError('');
+    inputInitiated = true;
     const target = e.target as HTMLInputElement;
     setChannelName(parseInput(target.value));
   };
@@ -63,10 +65,28 @@ export const CreateChannelModal = ({
   useEffect(() => {
     if (!isOpen) {
       submitPending.current = false;
+      inputInitiated = false;
       setChannelName('');
       setError('');
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    if (inputInitiated) {
+      const startsWithCharacter = !!channelName && !!channelName.match(/^\w/i);
+      const hasPunctuation = !!channelName && channelName.match(/[^\w\s-]|_/gi);
+
+      if (!startsWithCharacter) {
+        setError('Channel name must start with a letter or a number');
+      } else if (hasPunctuation) {
+        setError(
+          `Channel names can’t contain spaces, periods, or most punctuation.`,
+        );
+      } else {
+        setError('');
+      }
+    }
+  }, [channelName]);
 
   return (
     <Dialog open={isOpen} onClick={handleBackgroundClick}>
