@@ -7,3 +7,4 @@ export { Message } from 'components/message/message';
 export { MessageInput } from 'components/message/message-input';
 export { Sidebar } from 'components/sidebar/sidebar';
 export { SignUpModal } from 'components/sign-up-modal/sign-up-modal';
+export { StatusSnackbar } from 'components/snackbar/status-snackbar';
