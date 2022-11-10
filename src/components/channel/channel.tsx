@@ -44,7 +44,7 @@ export const Channel = () => {
       controller.abort();
       dispatch(leaveChannel());
     };
-  }, []);
+  }, [params['channelId']]);
 
   useEffect(() => {
     let fetchedMessages: MessageType[] = [];
@@ -69,20 +69,22 @@ export const Channel = () => {
         querySnapshot.docChanges().forEach((change) => {
           const singleMessage = change.doc.data() as MessageType;
 
-          if (change.type === 'added') {
-            fetchedMessages = [...fetchedMessages, singleMessage];
-          }
-
-          if (change.type === 'modified') {
-            fetchedMessages = messages.map((msg) =>
-              msg.id === singleMessage.id ? singleMessage : msg,
-            );
-          }
-
-          if (change.type === 'removed') {
-            fetchedMessages = messages.filter(
-              (msg) => msg.id !== singleMessage.id,
-            );
+          switch (change.type) {
+            case 'added': {
+              fetchedMessages = [...fetchedMessages, singleMessage];
+              break;
+            }
+            // case 'modified': {
+            //     fetchedMessages = messages.map((msg) =>
+            //       msg.id === singleMessage.id ? singleMessage : msg,
+            //     );
+            // }
+            // case 'removed': {
+            //   fetchedMessages = messages.filter(
+            //     (msg) => msg.id !== singleMessage.id,
+            //   );
+            //   break;
+            // }
           }
         });
 
