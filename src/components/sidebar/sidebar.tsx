@@ -1,56 +1,39 @@
-import { useEffect, useState } from 'react';
+import { MouseEvent, useEffect, useState } from 'react';
+
 import { flushSync } from 'react-dom';
-
-import { useParams } from 'react-router-dom';
-import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
-import { db } from 'firebase-config';
-
 import { useSelector } from 'react-redux';
-import { RootState, useAppDispatch } from 'store';
-import { enterChannel } from 'store/channel';
-
-import { styled } from '@mui/material/styles';
-import { Box as MUIBox, Link as MUILink } from '@mui/material';
+import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { HiHashtag } from 'react-icons/hi';
 import { BsFillPlusSquareFill } from 'react-icons/bs';
 
+import { db } from 'firebase-config';
+import { RootState } from 'store';
+
 import { SidebarChannel } from './sidebar-channel';
+import { CreateChannelModal } from 'components';
+import { Link, SidebarContainer } from './sidebar.styles';
 import type { ChannelType } from 'components/channel/channel.types';
 
-const Link = styled(MUILink)(({ theme }) => ({
-  color: '#fff',
-  display: 'block',
-
-  '&:hover, &:focus': {
-    backgroundColor: theme.palette.primary.dark,
-  },
-
-  '&.active': {
-    backgroundColor: '#1164A3',
-  },
-}));
-
-const Box = styled(MUIBox)(({ theme }) => ({
-  minWidth: '220px',
-  width: 'auto',
-  backgroundColor: theme.palette.primary.light,
-  color: theme.palette.primary.contrastText,
-
-  '& > *': {
-    padding: '0 15px',
-  },
-}));
-
 export const Sidebar = () => {
-  const params = useParams();
   const [channels, setChannels] = useState<ChannelType[]>([]);
-  const dispatch = useAppDispatch();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const channelId = useSelector((state: RootState) => state.channel.id);
   const workplaceId = useSelector((state: RootState) => state.workplace.id);
 
-  const handleClick = (channel: ChannelType) => {
-    if (channel.id !== params['channelId']) dispatch(enterChannel(channel));
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleBackgroundClick = (e: MouseEvent) => {
+    const target = e.target as Element;
+    if (target.closest('.inner-container')) return;
+
+    closeModal();
   };
 
   useEffect(() => {
@@ -69,7 +52,7 @@ export const Sidebar = () => {
             fetchedChannels = [...fetchedChannels, singleChannel];
             break;
           case 'modified':
-            fetchedChannels = channels.map((channel) =>
+            fetchedChannels = fetchedChannels.map((channel) =>
               channel.id === singleChannel.id ? singleChannel : channel,
             );
             break;
@@ -90,23 +73,29 @@ export const Sidebar = () => {
   }, []);
 
   return (
-    <Box>
-      <p>Channels:</p>
-      {channels.map((channel) => (
-        <Link
-          key={channel.id}
-          href={channel.id}
-          onClick={() => handleClick(channel)}
-          className={channelId === channel.id ? 'active' : ''}
-        >
-          <SidebarChannel icon={<HiHashtag />}>{channel.name}</SidebarChannel>
+    <>
+      <SidebarContainer>
+        <p>Channels:</p>
+        {channels.map((channel) => (
+          <Link
+            key={channel.id}
+            href={channel.id}
+            className={channelId === channel.id ? 'active' : ''}
+          >
+            <SidebarChannel icon={<HiHashtag />}>{channel.name}</SidebarChannel>
+          </Link>
+        ))}
+        <Link className="add-channel-button" onClick={openModal}>
+          <SidebarChannel icon={<BsFillPlusSquareFill />}>
+            Add channels
+          </SidebarChannel>
         </Link>
-      ))}
-      <Link className="add-channel-button">
-        <SidebarChannel icon={<BsFillPlusSquareFill />}>
-          Add channels
-        </SidebarChannel>
-      </Link>
-    </Box>
+      </SidebarContainer>
+      <CreateChannelModal
+        isOpen={isModalOpen}
+        closeModal={closeModal}
+        handleBackgroundClick={handleBackgroundClick}
+      />
+    </>
   );
 };
