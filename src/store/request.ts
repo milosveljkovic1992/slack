@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface InitialState {
   status: 'completed' | 'pending' | 'rejected' | null;
@@ -15,14 +15,14 @@ const requestSlice = createSlice({
   initialState,
   reducers: {
     submitRequest(state) {
-      (state.status = 'pending'), (state.message = 'Loading...');
+      (state.status = 'pending'), (state.message = 'Processing...');
     },
     resolveRequest(state) {
       (state.status = 'completed'), (state.message = 'Success!');
     },
-    rejectRequest(state) {
+    rejectRequest(state, action: PayloadAction<string>) {
       state.status = 'rejected';
-      state.message = 'Error. Please try again...';
+      state.message = action.payload;
     },
     resetStatus(state) {
       state.status = null;
