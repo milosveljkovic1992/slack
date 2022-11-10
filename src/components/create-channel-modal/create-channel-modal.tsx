@@ -11,6 +11,8 @@ import {
   Input,
 } from '@mui/material';
 
+import { useAppDispatch } from 'store';
+import { resolveRequest, submitRequest } from 'store/request';
 import { createNewChannel } from 'utils/createNewChannel';
 import { CreateChannelModalProps } from './create-channel-modal.types';
 
@@ -23,6 +25,8 @@ export const CreateChannelModal = ({
 }: CreateChannelModalProps) => {
   const params = useParams();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
   const [channelName, setChannelName] = useState<string>('');
   const [error, setError] = useState('');
 
@@ -55,7 +59,9 @@ export const CreateChannelModal = ({
     } else {
       if (workplaceId && channelName && !submitPending.current) {
         submitPending.current = true;
+        dispatch(submitRequest());
         const newChannelId = await createNewChannel(workplaceId, channelName);
+        dispatch(resolveRequest());
         navigate(`${newChannelId}`);
         closeModal();
       }

@@ -11,7 +11,7 @@ import { setUser, UserType } from 'store/user';
 
 import { saveUserToLocalStorage } from 'utils/saveUserToLocalStorage';
 
-import { LoadingSpinner } from 'components';
+import { LoadingSpinner, StatusSnackbar } from 'components';
 import { LandingPageForUnauthenticated } from 'pages';
 
 export const App = () => {
@@ -66,8 +66,12 @@ export const App = () => {
   }, []);
 
   if (authCheckComplete) {
-    if (isAuthenticated) return <Outlet />;
-    if (!isAuthenticated) return <LandingPageForUnauthenticated />;
+    return (
+      <>
+        {isAuthenticated ? <Outlet /> : <LandingPageForUnauthenticated />}
+        <StatusSnackbar />
+      </>
+    );
   }
   return <LoadingSpinner />;
 };

@@ -4,6 +4,7 @@ import { Button } from '@mui/material';
 
 import { useAppDispatch } from 'store';
 import { login } from 'store/auth';
+import { rejectRequest, resolveRequest, submitRequest } from 'store/request';
 import { setUser, UserType } from 'store/user';
 
 import { checkCredentials } from 'utils/checkCredentials';
@@ -40,12 +41,16 @@ export const LoginModal = ({ handleCloseModal }: LoginModalProps) => {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
+    dispatch(submitRequest());
     checkCredentials(email.value, username.value).then(
       (authResult: boolean | UserType) => {
-        if (typeof authResult !== 'boolean') {
+        if (typeof authResult === 'boolean') {
+          dispatch(rejectRequest('Username or email are incorrect'));
+        } else {
           dispatch(setUser(authResult));
           dispatch(login());
           saveUserToLocalStorage(authResult.id);
+          dispatch(resolveRequest());
         }
       },
     );
