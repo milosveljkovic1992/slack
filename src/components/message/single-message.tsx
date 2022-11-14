@@ -17,7 +17,7 @@ const MessageCard = styled(Grid)(() => ({
   boxShadow: 'none',
 }));
 
-export const Message = ({ message }: MessageProps) => {
+export const SingleMessage = ({ message }: MessageProps) => {
   const timestamp = message.timestamp.seconds
     ? new Date(message.timestamp.seconds * 1000).toLocaleTimeString()
     : '';

@@ -11,7 +11,7 @@ import { enterChannel, leaveChannel } from 'store/channel';
 import { checkIfUserIsChannelMember } from 'utils/checkIfUserIsChannelMember';
 import { fetchChannelById } from 'utils/fetchChannelById';
 
-import { Message, MessageInput } from 'components';
+import { SingleMessage, MessageInput } from 'components';
 import { ChannelContainer, MessagesContainer } from './channel.styles';
 import type { MessageType } from 'components/message/message.types';
 
@@ -105,7 +105,7 @@ export const Channel = () => {
     <ChannelContainer>
       <MessagesContainer ref={listRef}>
         {messages.map((msg) => (
-          <Message key={msg.id} message={msg} />
+          <SingleMessage key={msg.id} message={msg} />
         ))}
       </MessagesContainer>
       <MessageInput workplaceId={workplace.id} channelId={channel.id} />

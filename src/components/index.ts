@@ -3,8 +3,8 @@ export { CreateChannelModal } from 'components/create-channel-modal/create-chann
 export { Header } from 'components/header/header';
 export { LoadingSpinner } from 'components/loading-spinner/loading-spinner';
 export { LoginModal } from 'components/login-modal/login-modal';
-export { Message } from 'components/message/message';
 export { MessageInput } from 'components/message/message-input';
 export { Sidebar } from 'components/sidebar/sidebar';
 export { SignUpModal } from 'components/sign-up-modal/sign-up-modal';
+export { SingleMessage } from 'components/message/single-message';
 export { StatusSnackbar } from 'components/snackbar/status-snackbar';
