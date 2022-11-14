@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import authSlice from './auth';
 import channelSlice from './channel';
 import channelsSlice from './channels';
+import requestSlice from './request';
 import userSlice from './user';
 import usersSlice from './users';
 import workplaceSlice from './workplace';
@@ -13,6 +14,7 @@ const store = configureStore({
     auth: authSlice.reducer,
     channel: channelSlice.reducer,
     channels: channelsSlice.reducer,
+    request: requestSlice.reducer,
     user: userSlice.reducer,
     users: usersSlice.reducer,
     workplace: workplaceSlice.reducer,
