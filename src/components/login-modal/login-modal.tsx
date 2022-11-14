@@ -50,7 +50,7 @@ export const LoginModal = ({ handleCloseModal }: LoginModalProps) => {
           dispatch(setUser(authResult));
           dispatch(login());
           saveUserToLocalStorage(authResult.id);
-          dispatch(resolveRequest());
+          dispatch(resolveRequest('Logged in'));
         }
       },
     );

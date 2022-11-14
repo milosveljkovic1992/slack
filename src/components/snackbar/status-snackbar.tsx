@@ -29,7 +29,7 @@ export const StatusSnackbar = () => {
         {status === 'completed' ? (
           <Alert
             onClose={handleClose}
-            severity="error"
+            severity="success"
             sx={{ width: '100%' }}
             elevation={5}
           >

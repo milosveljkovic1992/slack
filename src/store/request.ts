@@ -17,8 +17,8 @@ const requestSlice = createSlice({
     submitRequest(state) {
       (state.status = 'pending'), (state.message = 'Processing...');
     },
-    resolveRequest(state) {
-      (state.status = 'completed'), (state.message = 'Success!');
+    resolveRequest(state, action: PayloadAction<string>) {
+      (state.status = 'completed'), (state.message = action.payload);
     },
     rejectRequest(state, action: PayloadAction<string>) {
       state.status = 'rejected';

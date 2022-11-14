@@ -61,7 +61,7 @@ export const CreateChannelModal = ({
         submitPending.current = true;
         dispatch(submitRequest());
         const newChannelId = await createNewChannel(workplaceId, channelName);
-        dispatch(resolveRequest());
+        dispatch(resolveRequest('Created!'));
         navigate(`${newChannelId}`);
         closeModal();
       }
